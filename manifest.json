@@ -1,0 +1,9 @@
+{
+  "name": "Airtel Lite",
+  "short_name": "Airtel",
+  "start_url": "/login.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ed1c24",
+  "icons": []
+}
