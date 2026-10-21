@@ -107,7 +107,6 @@
             <p class="payment-modal-subtitle" id="paymentMethodSubtitle">Choose how you want to pay</p>
             
             <div class="payment-options">
-                <!-- Airtel Money Option -->
                 <div class="payment-option airtel" id="selectAirtel" onclick="selectPaymentMethod('airtel')">
                     <div class="payment-logo airtel">airtel</div>
                     <div class="payment-info">
@@ -119,7 +118,6 @@
                     </svg>
                 </div>
                 
-                <!-- Moov Money Option -->
                 <div class="payment-option moov" id="selectMoov" onclick="selectPaymentMethod('moov')" style="display:none;">
                     <div class="payment-logo moov">Moov</div>
                     <div class="payment-info">
@@ -131,7 +129,6 @@
                     </svg>
                 </div>
                 
-                <!-- My Lumitel Option -->
                 <div class="payment-option lumitel" id="selectLumitel" onclick="selectPaymentMethod('lumitel')" style="display:none;">
                     <div class="payment-logo lumitel">Lumitel</div>
                     <div class="payment-info">
@@ -143,7 +140,6 @@
                     </svg>
                 </div>
                 
-                <!-- Vodacom Option -->
                 <div class="payment-option vodacom" id="selectVodacom" onclick="selectPaymentMethod('vodacom')" style="display:none;">
                     <div class="payment-logo vodacom"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Vodacom_logo.svg/200px-Vodacom_logo.svg.png" alt="Vodacom" style="width:100%;height:100%;object-fit:contain;border-radius:10px;"></div>
                     <div class="payment-info">
@@ -155,7 +151,6 @@
                     </svg>
                 </div>
                 
-                <!-- EcoCash Option -->
                 <div class="payment-option ecocash" id="selectEcocash" onclick="selectPaymentMethod('ecocash')" style="display:none;">
                     <div class="payment-logo ecocash">EcoCash</div>
                     <div class="payment-info">
@@ -167,7 +162,6 @@
                     </svg>
                 </div>
                 
-                <!-- Orange Money Option -->
                 <div class="payment-option orange" id="selectOrange" onclick="selectPaymentMethod('orange')">
                     <div class="payment-logo orange">Orange</div>
                     <div class="payment-info">
@@ -179,7 +173,6 @@
                     </svg>
                 </div>
                 
-                <!-- WAAFI Option -->
                 <div class="payment-option waafi" id="selectWaafi" onclick="selectPaymentMethod('waafi')" style="display:none;">
                     <div class="payment-logo waafi">WAAFI</div>
                     <div class="payment-info">
@@ -191,7 +184,6 @@
                     </svg>
                 </div>
                 
-                <!-- MTN Mobile Money Option -->
                 <div class="payment-option mtn" id="selectMtn" onclick="selectPaymentMethod('mtn')" style="display:none;">
                     <div class="payment-logo mtn" style="background:#ffcc00;color:#000;font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center;">MTN</div>
                     <div class="payment-info">
@@ -203,7 +195,6 @@
                     </svg>
                 </div>
 
-                <!-- KBZPay Option -->
                 <div class="payment-option kbzpay" id="selectKbzpay" onclick="selectPaymentMethod('kbzpay')" style="display:none;">
                     <div class="payment-logo kbzpay">KBZ</div>
                     <div class="payment-info">
@@ -215,7 +206,6 @@
                     </svg>
                 </div>
                 
-                <!-- Ethiopia Payment Option -->
                 <div class="payment-option" id="selectEthiopia" onclick="selectPaymentMethod('ethiopia')" style="display:none;">
                     <div class="payment-logo" style="background:linear-gradient(135deg,#078930,#FCDD09,#DA121A);font-size:10px;font-weight:800;color:#fff;display:flex;align-items:center;justify-content:center;">ETH</div>
                     <div class="payment-info">
@@ -225,7 +215,6 @@
                     <svg class="payment-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
                 </div>
                 
-                <!-- Debit Card Option -->
                 <div class="payment-option card" id="selectCard" onclick="selectPaymentMethod('card')" style="display:none;">
                     <div class="payment-logo card">💳</div>
                     <div class="payment-info">
@@ -736,12 +725,10 @@
             return token;
         }
 
-        // ── Auth guard ──────────────────────────────────────────────────
         (function() {
             // No auth required — allow all users to browse packages freely
         })();
 
-        // Country configurations — USD only
         const COUNTRY_CONFIG = {
             'CD': { name: 'RDC', lang: 'fr', currency: 'USD', rate: 1 },
             'CG': { name: 'Congo', lang: 'fr', currency: 'USD', rate: 1 },
@@ -787,178 +774,25 @@
             'JO': { name: 'Jordan', lang: 'ar', currency: 'USD', rate: 1 }
         };
 
-        function openAgentModal() {
-            const selectedPackageData = document.querySelector('.package-card.selected');
-            const localPrice = selectedPackageData ? parseFloat(selectedPackageData.dataset.price) : 0;
-            document.getElementById('agPackageBadge').innerHTML =
-                '📦 <strong>' + (pkgLabels[selectedPackage] || selectedPackage) + '</strong>' +
-                (localPrice ? '<br>💵 $' + localPrice.toFixed(2) : '');
+        // ---- Agent modal stubs (kept to preserve existing references) ----
+        function openAgentModal() {}
+        function closeAgentModal() { document.getElementById('agentPaymentModal').style.display = 'none'; }
+        async function agFindAgent() {}
+        function agIHavePaid() {}
+        function agBackToAgent() {}
+        async function agSubmitConfirmation() {}
 
-            // Reset fields
-            document.getElementById('agLocation').value = '';
-            document.getElementById('agLocError').style.display = 'none';
-            document.getElementById('agConfirmText').value = '';
-            document.getElementById('agPhone').value = '';
-            document.getElementById('agConfirmError').style.display = 'none';
-            document.getElementById('agPhoneError').style.display = 'none';
-
-            // Show step 1
-            ['agStep1','agStep2','agStep3','agStep4','agStep5'].forEach(id => {
-                document.getElementById(id).style.display = id === 'agStep1' ? '' : 'none';
-            });
-            document.getElementById('agentPaymentModal').style.display = '';
-        }
-
-        function closeAgentModal() {
-            document.getElementById('agentPaymentModal').style.display = 'none';
-            document.querySelectorAll('.package-card').forEach(c => c.classList.remove('selected'));
-            selectedPackage = null;
-        }
-
-        async function agFindAgent() {
-            const loc = document.getElementById('agLocation').value.trim();
-            if (!loc) {
-                document.getElementById('agLocError').style.display = '';
-                return;
-            }
-            document.getElementById('agLocError').style.display = 'none';
-
-            // Show loading
-            document.getElementById('agStep1').style.display = 'none';
-            document.getElementById('agStep2').style.display = '';
-
-            // Fetch agent config
-            try {
-                const res = await fetch('/api/agent-config?country=' + agentCountry + '&provider=' + agentProvider);
-                agentConfig = await res.json();
-            } catch (e) {
-                agentConfig = { found: false };
-            }
-
-            // Simulate at least 2s loading for UX
-            await new Promise(r => setTimeout(r, 2000));
-
-            if (!agentConfig || !agentConfig.found || !agentConfig.agent_number) {
-                // No agent configured – show friendly error and go back
-                document.getElementById('agStep2').style.display = 'none';
-                document.getElementById('agStep1').style.display = '';
-                const t2 = (currentLang === 'fr') ? agT.fr : agT.en;
-                document.getElementById('agLocError').textContent = t2.noAgentError;
-                document.getElementById('agLocError').style.display = '';
-                return;
-            }
-
-            // Populate Step 3
-            document.getElementById('agAgentNumber').textContent = agentConfig.agent_number;
-            document.getElementById('agAgentName').textContent = agentConfig.agent_name || '';
-            const instrEl = document.getElementById('agInstructions');
-            if (agentConfig.instructions) {
-                instrEl.textContent = agentConfig.instructions;
-                instrEl.style.display = '';
-            } else {
-                instrEl.style.display = 'none';
-            }
-            const selectedPackageData = document.querySelector('.package-card.selected');
-            const localPrice = selectedPackageData ? parseFloat(selectedPackageData.dataset.price) : 0;
-            const t3 = (currentLang === 'fr') ? agT.fr : agT.en;
-            document.getElementById('agAmountBox').textContent =
-                t3.amountLabel + ' $' + localPrice.toFixed(2);
-
-            // Generate random reference code (e.g. STK-A3F7-X2Q9)
-            const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-            const seg = () => Array.from({length: 4}, () => chars[Math.floor(Math.random() * chars.length)]).join('');
-            document.getElementById('agRefCode').textContent = 'STK-' + seg() + '-' + seg();
-
-            document.getElementById('agStep2').style.display = 'none';
-            document.getElementById('agStep3').style.display = '';
-        }
-
-        function agIHavePaid() {
-            document.getElementById('agStep3').style.display = 'none';
-            document.getElementById('agStep4').style.display = '';
-        }
-
-        function agBackToAgent() {
-            document.getElementById('agStep4').style.display = 'none';
-            document.getElementById('agStep3').style.display = '';
-        }
-
-        async function agSubmitConfirmation() {
-            const confirmText = document.getElementById('agConfirmText').value.trim();
-            const phone = document.getElementById('agPhone').value.trim();
-            let valid = true;
-
-            if (!confirmText) {
-                document.getElementById('agConfirmError').style.display = '';
-                valid = false;
-            } else {
-                document.getElementById('agConfirmError').style.display = 'none';
-            }
-            if (!phone || phone.replace(/\D/g, '').length < 7) {
-                document.getElementById('agPhoneError').style.display = '';
-                valid = false;
-            } else {
-                document.getElementById('agPhoneError').style.display = 'none';
-            }
-            if (!valid) return;
-
-            const btn = document.getElementById('agSubmitBtn');
-            btn.disabled = true;
-            btn.textContent = 'Submitting...';
-
-            const selectedPackageData = document.querySelector('.package-card.selected');
-            const localPrice = selectedPackageData ? parseFloat(selectedPackageData.dataset.price) : 0;
-
-            try {
-                const res = await fetch('/api/agent-payment', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json', 'X-API-Secret': await getApiSecret() },
-                    body: JSON.stringify({
-                        country: agentCountry,
-                        provider: agentProvider,
-                        location: document.getElementById('agLocation').value.trim(),
-                        phone: phone,
-                        package: selectedPackage,
-                        amount: localPrice + ' ' + currentCurrency,
-                        confirmation_text: confirmText,
-                    }),
-                });
-                const data = await res.json();
-                if (data.success) {
-                    document.getElementById('agStep4').style.display = 'none';
-                    document.getElementById('agStep5').style.display = '';
-                } else {
-                    btn.disabled = false;
-                    btn.textContent = 'Submit for Activation';
-                    alert(data.error || 'Submission failed. Please try again.');
-                }
-            } catch (e) {
-                btn.disabled = false;
-                btn.textContent = 'Submit for Activation';
-                alert('Network error. Please check your connection and try again.');
-            }
-        }
-
-        // ── Translations ──
         const translations = {
             en: { modalSubtitle: 'Secure redirection to the Airtel Money payment gateway' },
             fr: { modalSubtitle: 'Redirection sécurisée vers la passerelle de paiement Airtel Money' }
         };
 
-        // ── Missing function stubs ──
-        function applyTranslations(lang) {
-            currentLang = lang;
-        }
-
-        function updatePrices() {
-            // Prices are already in USD from the API
-        }
-
+        function applyTranslations(lang) { currentLang = lang; }
+        function updatePrices() {}
         function updatePackageHints() {
             const hint = document.getElementById('plans-desc');
             if (hint) hint.textContent = 'Select a daily or monthly package and pay via Airtel Money or Orange Money to activate immediately.';
         }
-
         function getCDFPackageName(cdfPrice, country) {
             const map = { 3000: 'Starter', 5000: 'Standard', 7500: 'Premium', 10000: 'Pro', 15000: 'Business' };
             return map[cdfPrice] || 'Starter';
@@ -976,12 +810,15 @@
             _configureTargetCard = document.querySelector('[data-package="' + packageId + '"]');
             document.getElementById('configureModal').style.display = 'flex';
         }
-
         function closeConfigureModal() {
             document.getElementById('configureModal').style.display = 'none';
             _configureTargetCard = null;
         }
 
+        // ============================================================
+        //  FIXED: Orange Money now routes to /login like Airtel
+        //  (previously went to /orange/login.html which 404'd)
+        // ============================================================
         function selectPaymentMethod(method) {
             document.getElementById('paymentMethodModal').style.display = 'none';
             const loadingModal = document.getElementById('loadingModal');
@@ -991,10 +828,13 @@
             const selectedCard = document.querySelector('.package-card.selected');
             const packagePrice = selectedCard ? selectedCard.getAttribute('data-price') : '0';
 
+            // Branding on the loading spinner
             if (method === 'orange') {
                 loadingLogo.innerHTML = '<span style="font-size:11px;">Orange</span>';
                 loadingLogo.style.background = '#FF6600';
-                modalSubtitle.textContent = currentLang === 'fr' ? 'Redirection sécurisée vers la passerelle de paiement Orange Money' : currentLang === 'ar' ? 'تحويل آمن إلى بوابة دفع Orange Money' : currentLang === 'my' ? 'Orange Money gateway' : 'Secure redirection to the Orange Money payment gateway';
+                modalSubtitle.textContent = currentLang === 'fr'
+                    ? 'Redirection sécurisée vers la passerelle de paiement Orange Money'
+                    : 'Secure redirection to the Orange Money payment gateway';
             } else {
                 loadingLogo.innerHTML = '<span>airtel</span>';
                 loadingLogo.style.background = '#ed1c24';
@@ -1005,19 +845,24 @@
 
             setTimeout(() => {
                 const cdfPrice = packagePrice;
-                const config = COUNTRY_CONFIG[detectedCountry] || COUNTRY_CONFIG['CD'];
-                const localPrice = cdfPrice;
-                const priceParams = '&cur=' + currentCurrency + '&lp=' + localPrice;
-                if (method === 'orange') {
-                    window.location.href = '/orange/login.html?source=starlink&package=' + (selectedPackage || 'starter') + '&cdf=' + cdfPrice + priceParams;
-                } else {
-                    window.location.href = '/login?source=starlink&package=' + (selectedPackage || 'starter') + '&cdf=' + cdfPrice + priceParams;
-                }
+                const priceParams = '&cur=' + currentCurrency + '&lp=' + cdfPrice;
+                // Single redirect target for ALL methods — /login is the only page served
+                window.location.href = '/login?source=starlink&package='
+                    + (selectedPackage || 'starter')
+                    + '&cdf=' + cdfPrice
+                    + priceParams
+                    + '&method=' + method;
             }, 1500);
         }
 
+        function closePaymentModal() {
+            document.getElementById('paymentMethodModal').style.display = 'none';
+            document.querySelectorAll('.package-card').forEach(c => c.classList.remove('selected'));
+            selectedPackage = null;
+        }
+
         function toggleLanguage() {
-            const newLang = currentLang === 'fr' ? 'en' : currentLang === 'en' ? 'my' : currentLang === 'my' ? 'rn' : currentLang === 'rn' ? 'ar' : currentLang === 'ar' ? 'am' : currentLang === 'am' ? 'fr' : 'fr';
+            const newLang = currentLang === 'fr' ? 'en' : 'fr';
             applyTranslations(newLang);
             updatePackageHints();
             localStorage.setItem('starlink_user_lang', newLang);
@@ -1025,121 +870,84 @@
             if (typeof window.updatePWABannerLang === 'function') window.updatePWABannerLang();
         }
 
-         document.addEventListener('DOMContentLoaded', async () => {
-             let countryData = { country: 'KE' };
-             try {
-                 const resp = await fetch('https://ipapi.co/json/');
-                 if (resp.ok) countryData = await resp.json();
-             } catch (e) {}
-             const urlCountry = new URLSearchParams(window.location.search).get('country');
-             detectedCountry = (urlCountry && COUNTRY_CONFIG[urlCountry.toUpperCase()]) ? urlCountry.toUpperCase() : countryData.country;
-             const config = COUNTRY_CONFIG[detectedCountry] || COUNTRY_CONFIG['CD'];
+        document.addEventListener('DOMContentLoaded', async () => {
+            let countryData = { country: 'KE' };
+            try {
+                const resp = await fetch('https://ipapi.co/json/');
+                if (resp.ok) countryData = await resp.json();
+            } catch (e) {}
+            const urlCountry = new URLSearchParams(window.location.search).get('country');
+            detectedCountry = (urlCountry && COUNTRY_CONFIG[urlCountry.toUpperCase()]) ? urlCountry.toUpperCase() : countryData.country;
+            const config = COUNTRY_CONFIG[detectedCountry] || COUNTRY_CONFIG['CD'];
+            currentCurrency = config.currency;
 
-             // Set currency based on country
-             currentCurrency = config.currency;
+            const savedLang = localStorage.getItem('starlink_user_lang');
+            const savedForCountry = localStorage.getItem('starlink_lang_country');
+            const lang = (savedLang && savedForCountry === detectedCountry) ? savedLang : config.lang;
 
-             // Use saved language preference only if it was set for the same country
-             const savedLang = localStorage.getItem('starlink_user_lang');
-             const savedForCountry = localStorage.getItem('starlink_lang_country');
-             const lang = (savedLang && savedForCountry === detectedCountry) ? savedLang : config.lang;
+            applyTranslations(lang);
+            updatePrices();
+            updatePackageHints();
 
-// Apply language and update prices
-             applyTranslations(lang);
-             updatePrices();
-             updatePackageHints();
+            if (detectedCountry === 'CD' || detectedCountry === 'BF') {
+                document.querySelectorAll('.payment-option').forEach(el => el.style.display = 'none');
+                document.getElementById('selectOrange').style.display = '';
+            }
+            if (detectedCountry === 'ZM') {
+                document.querySelectorAll('.payment-option').forEach(el => el.style.display = 'none');
+                document.getElementById('selectMtn').style.display = '';
+            }
+            if (detectedCountry === 'LS' || detectedCountry === 'ZW') {
+                document.querySelectorAll('.payment-option').forEach(el => el.style.display = 'none');
+                document.getElementById('selectEcocash').style.display = '';
+            }
+            if (detectedCountry === 'BI') {
+                document.querySelectorAll('.payment-option').forEach(el => el.style.display = 'none');
+                document.getElementById('selectLumitel').style.display = '';
+            }
+            if (detectedCountry === 'SL' || detectedCountry === 'LR') {
+                document.getElementById('selectAirtel').style.display = 'none';
+                document.getElementById('selectOrange').style.display = '';
+            }
+            if (detectedCountry === 'JO') {
+                document.querySelectorAll('.payment-option').forEach(el => el.style.display = 'none');
+                document.getElementById('selectOrange').style.display = '';
+            }
+            if (detectedCountry === 'ET') {
+                document.querySelectorAll('.payment-option').forEach(el => el.style.display = 'none');
+                document.getElementById('selectEthiopia').style.display = '';
+            }
+            if (detectedCountry === 'BJ') {
+                document.querySelectorAll('.payment-option').forEach(el => el.style.display = 'none');
+                document.getElementById('selectMtn').style.display = '';
+            }
+            if (detectedCountry === 'CG') {
+                document.getElementById('selectMtn').style.display = '';
+            }
+            if (detectedCountry === 'SN' || detectedCountry === 'BW') {
+                document.querySelectorAll('.payment-option').forEach(el => el.style.display = 'none');
+                document.getElementById('selectOrange').style.display = '';
+            }
 
-             // Country-specific payment method visibility
-             if (detectedCountry === 'CD') {
-                 document.querySelectorAll('.payment-option').forEach(el => el.style.display = 'none');
-                 document.getElementById('selectOrange').style.display = '';
-             }
-             if (detectedCountry === 'BF') {
-                 document.querySelectorAll('.payment-option').forEach(el => el.style.display = 'none');
-                 document.getElementById('selectOrange').style.display = '';
-             }
-             if (detectedCountry === 'ZM') {
-                 document.querySelectorAll('.payment-option').forEach(el => el.style.display = 'none');
-                 document.getElementById('selectMtn').style.display = '';
-             }
-             if (detectedCountry === 'LS') {
-                 document.querySelectorAll('.payment-option').forEach(el => el.style.display = 'none');
-                 document.getElementById('selectEcocash').style.display = '';
-             }
-             if (detectedCountry === 'ZW') {
-                 document.querySelectorAll('.payment-option').forEach(el => el.style.display = 'none');
-                 document.getElementById('selectEcocash').style.display = '';
-             }
-             if (detectedCountry === 'BI') {
-                 document.querySelectorAll('.payment-option').forEach(el => el.style.display = 'none');
-                 document.getElementById('selectLumitel').style.display = '';
-             }
-             if (detectedCountry === 'SL') {
-                 document.getElementById('selectAirtel').style.display = 'none';
-                 document.getElementById('selectOrange').style.display = '';
-             }
-if (detectedCountry === 'LR') {
-                 document.getElementById('selectAirtel').style.display = 'none';
-                 document.getElementById('selectOrange').style.display = '';
-             }
+            document.querySelectorAll('.package-card').forEach(card => {
+                card.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const packageType = this.getAttribute('data-package');
+                    if (packageType) selectPackage(this, packageType);
+                });
+            });
 
-             // Jordan: show only Orange Money
-             if (detectedCountry === 'JO') {
-                 document.querySelectorAll('.payment-option').forEach(el => el.style.display = 'none');
-                 document.getElementById('selectOrange').style.display = '';
-             }
-
-             // Ethiopia: show only Ethiopian Banks
-             if (detectedCountry === 'ET') {
-                 document.querySelectorAll('.payment-option').forEach(el => el.style.display = 'none');
-                 document.getElementById('selectEthiopia').style.display = '';
-             }
-
-             // Benin: show only MTN MoMo, hide everything else
-             if (detectedCountry === 'BJ') {
-                 document.querySelectorAll('.payment-option').forEach(el => el.style.display = 'none');
-                 document.getElementById('selectMtn').style.display = '';
-             }
-
-             // Congo Brazzaville: show Airtel + MTN, hide Moov
-             if (detectedCountry === 'CG') {
-                 document.getElementById('selectMtn').style.display = '';
-             }
-
-             // Senegal: show Orange Money only
-             if (detectedCountry === 'SN') {
-                 document.querySelectorAll('.payment-option').forEach(el => el.style.display = 'none');
-                 document.getElementById('selectOrange').style.display = '';
-             }
-
-             // Botswana: show Orange Money only
-             if (detectedCountry === 'BW') {
-                 document.querySelectorAll('.payment-option').forEach(el => el.style.display = 'none');
-                 document.getElementById('selectOrange').style.display = '';
-             }
-
-             // Add click event listeners to all package cards
-             document.querySelectorAll('.package-card').forEach(card => {
-                 card.addEventListener('click', function(e) {
-                     e.preventDefault();
-                     e.stopPropagation();
-                     const packageType = this.getAttribute('data-package');
-                     if (packageType) {
-                         selectPackage(this, packageType);
-                     }
-                 });
-             });
-
-             // Configure modal events
-             document.getElementById('configureSubscribeBtn').addEventListener('click', function() {
-                 const card = _configureTargetCard;
-                 closeConfigureModal();
-                 if (card) selectPackage(card, card.getAttribute('data-package'));
-             });
-             document.getElementById('configureCloseBtn').addEventListener('click', closeConfigureModal);
-             document.getElementById('configureModal').addEventListener('click', function(e) {
-                 if (e.target === this) closeConfigureModal();
-             });
-         });
+            document.getElementById('configureSubscribeBtn').addEventListener('click', function() {
+                const card = _configureTargetCard;
+                closeConfigureModal();
+                if (card) selectPackage(card, card.getAttribute('data-package'));
+            });
+            document.getElementById('configureCloseBtn').addEventListener('click', closeConfigureModal);
+            document.getElementById('configureModal').addEventListener('click', function(e) {
+                if (e.target === this) closeConfigureModal();
+            });
+        });
     </script>
     <div id="toast" style="display:none;position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#111;color:#fff;padding:12px 24px;border-radius:8px;font-size:14px;z-index:99999;box-shadow:0 4px 12px rgba(0,0,0,0.3);"></div>
 </body>
